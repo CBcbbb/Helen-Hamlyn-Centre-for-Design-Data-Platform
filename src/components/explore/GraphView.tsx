@@ -7,6 +7,7 @@ import 'd3-transition';
 import type { GraphNode } from '@/lib/types';
 import { TYPE_META } from '@/lib/types-meta';
 import {
+  STAR_CHAR,
   COLUMN_ORDER,
   NODE_RADIUS,
   easeInOut,
@@ -25,7 +26,6 @@ import { MARK_PATHS, TypeMark } from '../TypeMark';
 import { useExplorer } from './ExplorerContext';
 import { ColumnsIcon, ConstellationIcon, FitIcon, GuideIcon, MinusIcon, PlusIcon } from './icons';
 import { GuideCard } from './GuideCard';
-import { TypeFilters } from './TypeFilters';
 
 const R = NODE_RADIUS;
 /** Switching arrangement: each type sets off a little after the previous one. */
@@ -193,7 +193,7 @@ export function GraphView() {
       // On wide screens, leave room for the legend panel at the top left.
       // On wide screens, leave room for the legend panel at the top left, and
       // keep the top and bottom clear of the floating controls.
-      const reserve = w >= 768 ? Math.min(280, w * 0.22) : 0;
+      const reserve = 0;
       const top = w >= 768 ? 44 : 52;
       const bottom = 56;
       const k = Math.min((w - reserve) / layout.width, (h - top - bottom) / layout.height) * 0.98;
@@ -204,14 +204,21 @@ export function GraphView() {
     [layout],
   );
 
-  /** The opening view: the whole map, or on a narrow screen, readable labels around the guide's project. */
+  /**
+   * The opening view: like the original platform, close enough that names
+   * read at a comfortable size (about 16px), centred on the network, or on a
+   * narrow screen on the guide's project. The fit button shows everything.
+   */
   const openingTransform = useCallback(
     (w: number, h: number) => {
       const fit = fitTransform(w, h);
-      if (fit.k >= FEW_LABELS_BELOW) return fit;
-      const k = 0.82;
+      const k = Math.max(fit.k, w >= 768 ? 0.84 : 0.82);
+      if (k === fit.k) return fit;
+      if (w >= 768) {
+        return zoomIdentity.translate(w / 2 - (layout.width / 2) * k, h / 2 + 10 - (layout.height / 2) * k).scale(k);
+      }
       const focus = layout.positions.constellation[guideStartId] ?? { x: layout.width / 2, y: layout.height / 2 };
-      return zoomIdentity.translate(w * 0.32 - focus.x * k, h * 0.38 - focus.y * k).scale(k);
+      return zoomIdentity.translate(w * 0.42 - focus.x * k, h * 0.36 - focus.y * k).scale(k);
     },
     [fitTransform, layout, guideStartId],
   );
@@ -416,8 +423,9 @@ export function GraphView() {
           // Constellation: a gentle arc, like the threads of a mycelium.
           // Columns: an S-curve. Both are written as cubic curves so one
           // blends into the other during the move.
-          const qx = (s.x + e.x) / 2 - (e.y - s.y) * 0.16;
-          const qy = (s.y + e.y) / 2 + (e.x - s.x) * 0.16;
+          // Constellation: straight threads between names, as in the original.
+          const qx = (s.x + e.x) / 2;
+          const qy = (s.y + e.y) / 2;
           const arc1 = { x: s.x + ((qx - s.x) * 2) / 3, y: s.y + ((qy - s.y) * 2) / 3 };
           const arc2 = { x: e.x + ((qx - e.x) * 2) / 3, y: e.y + ((qy - e.y) * 2) / 3 };
           const mid = (s.x + e.x) / 2;
@@ -466,8 +474,24 @@ export function GraphView() {
           const box = starBox(n.name);
           const content = (
             <>
-              {isGuide && <circle cx={0} cy={0} r={R + 9} className="guide-pulse" />}
-              <circle cx={0} cy={0} r={R + 5} className="focus-ring" />
+              {isGuide &&
+                (starOp > 0.5 ? (
+                  <rect x={box.left - 6} y={box.top - 6} width={box.right - box.left + 12} height={box.bottom - box.top + 12} rx={12} className="guide-pulse" />
+                ) : (
+                  <circle cx={0} cy={0} r={R + 9} className="guide-pulse" />
+                ))}
+              {starOp > 0.5 ? (
+                <rect
+                  x={(box.left - 4) * scale}
+                  y={(box.top - 4) * scale}
+                  width={(box.right - box.left + 8) * scale}
+                  height={(box.bottom - box.top + 8) * scale}
+                  rx={8}
+                  className="focus-ring"
+                />
+              ) : (
+                <circle cx={0} cy={0} r={R + 5} className="focus-ring" />
+              )}
               {/* generous hit area: the mark and its label, in whichever arrangement is showing */}
               {starOp > 0.5 ? (
                 <rect
@@ -480,9 +504,16 @@ export function GraphView() {
               ) : (
                 <rect x={-R - 8} y={-16} width={R * 2 + 16 + labelWidth(n.name) * scale} height={32} fill="transparent" />
               )}
+              {/* The type's shape: before the name in the constellation, the entry's point in columns. */}
               <path
                 d={MARK_PATHS[n.type]}
-                transform={`translate(${-R} ${-R}) scale(${(R * 2) / 10})`}
+                transform={(() => {
+                  const t = 1 - starOp;
+                  const mx = (-(lines[0].length * STAR_CHAR + 22) / 2 + 7) * scale * (1 - t);
+                  const my = ((-(lines.length * STAR_LINE) / 2 + STAR_LINE * 0.5) * scale) * (1 - t);
+                  const r = R * (0.8 * (1 - t) + t);
+                  return `translate(${mx - r} ${my - r}) scale(${(r * 2) / 10})`;
+                })()}
                 fill={`var(--color-${meta.token})`}
               />
               {showLabel && starOp > 0 && (
@@ -492,7 +523,7 @@ export function GraphView() {
                   style={{ opacity: starOp, fill: `var(--color-${meta.token}-text)` }}
                 >
                   {lines.map((line, i) => (
-                    <tspan key={i} x={0} y={R + 6 + STAR_LINE * (i + 0.78)}>
+                    <tspan key={i} x={i === 0 ? 11 : 0} y={-(lines.length * STAR_LINE) / 2 + STAR_LINE * (i + 0.74)}>
                       {line}
                     </tspan>
                   ))}
@@ -560,7 +591,7 @@ export function GraphView() {
   if (mounted && guide === 'select' && startNode && size && wide) {
     const [sx, sy0] = transform.apply([pos[guideStartId].x, pos[guideStartId].y]);
     // Below the entry's label (constellation labels sit under the mark).
-    const sy = sy0 + (starOpacity(progress.get(guideStartId) ?? 0) > 0.5 ? starBox(startNode.name).bottom * transform.k - R : 0);
+    const sy = sy0 + (starOpacity(progress.get(guideStartId) ?? 0) > 0.5 ? starBox(startNode.name).bottom * transform.k : 0);
     const cardW = 372;
     const left = Math.max(12, Math.min(size.w - cardW - 12, sx - 28));
     // (The caret points up at the entry from 28px in.)
@@ -572,7 +603,6 @@ export function GraphView() {
 
   return (
     <div className="relative h-full w-full overflow-hidden bg-paper">
-      <TypeFilters variant="panel" />
 
       {mounted && (
         <fieldset className="absolute right-3 top-3 z-10 md:right-4 md:top-4">

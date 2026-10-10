@@ -342,8 +342,8 @@ kbd {
 }
 /* Constellation labels: the name in its type's colour, bold and centred, as in the original platform. */
 .graph-node text.star-label {
-  font-size: 17px;
-  font-weight: 720;
+  font-size: 19px;
+  font-weight: 760;
   letter-spacing: -0.005em;
   text-anchor: middle;
   stroke-width: 5px;

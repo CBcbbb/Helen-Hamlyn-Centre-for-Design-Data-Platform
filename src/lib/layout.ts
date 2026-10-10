@@ -20,7 +20,7 @@ import { forceLink, forceManyBody, forceSimulation, forceX, forceY, forceCollide
 import type { SimulationLinkDatum, SimulationNodeDatum } from 'd3-force';
 import type { GraphData, NodeType } from './types';
 
-export const LAYOUT_WIDTH = 1200;
+export const LAYOUT_WIDTH = 1600;
 export const COLUMN_ORDER: NodeType[] = ['Partners', 'People', 'Projects', 'Methods'];
 /** Column positions as fractions of the map width. */
 export const COLUMN_X = [0.01, 0.27, 0.53, 0.78];
@@ -34,9 +34,9 @@ export const LABEL_MAX = 34;
  * bold and in its type's colour, centred under the entry's mark and wrapped
  * onto up to three lines.
  */
-export const STAR_FONT = 17;
-export const STAR_LINE = 20;
-const STAR_CHAR = 9.4;
+export const STAR_FONT = 19;
+export const STAR_LINE = 23;
+export const STAR_CHAR = 10.5;
 const STAR_WRAP = 18;
 const STAR_MAX_LINES = 3;
 
@@ -66,8 +66,10 @@ export function wrapLabel(name: string): string[] {
 /** The extent of a constellation entry (mark plus wrapped label) relative to its point. */
 export function starBox(name: string): { left: number; right: number; top: number; bottom: number } {
   const lines = wrapLabel(name);
-  const w = Math.max(NODE_RADIUS * 2, ...lines.map((l) => l.length * STAR_CHAR)) + 8;
-  return { left: -w / 2, right: w / 2, top: -NODE_RADIUS - 4, bottom: NODE_RADIUS + 6 + lines.length * STAR_LINE };
+  // The name is the node, centred on its point; a small type mark sits before the first line.
+  const w = Math.max(...lines.map((l, i) => l.length * STAR_CHAR + (i === 0 ? 22 : 0))) + 8;
+  const h = lines.length * STAR_LINE + 6;
+  return { left: -w / 2, right: w / 2, top: -h / 2, bottom: h / 2 };
 }
 
 export type Arrangement = 'constellation' | 'columns';
@@ -107,7 +109,7 @@ export function computeLayout(data: GraphData): Layout {
   const constellation = computeConstellation(
     data,
     LAYOUT_WIDTH,
-    Math.max(perColumn * 38 + 140, Math.round(Math.sqrt(data.nodes.length) * 132)),
+    Math.max(perColumn * 38 + 140, Math.round(Math.sqrt(data.nodes.length) * 128)),
   );
   const height = constellation.height;
   return {
@@ -150,8 +152,8 @@ function computeConstellation(data: GraphData, width: number, height: number): {
   });
   const links: SimulationLinkDatum<SimNode>[] = data.links.map((l) => ({ source: l.source, target: l.target }));
 
-  const PAD_X = 10;
-  const PAD_Y = 8;
+  const PAD_X = 26;
+  const PAD_Y = 18;
   const boxCollide = (strength = 0.7) => {
     for (let i = 0; i < nodes.length; i++) {
       for (let j = i + 1; j < nodes.length; j++) {
@@ -192,12 +194,12 @@ function computeConstellation(data: GraphData, width: number, height: number): {
       'link',
       forceLink<SimNode, SimulationLinkDatum<SimNode>>(links)
         .id((d) => d.id)
-        .distance(120)
+        .distance(150)
         .strength(0.22),
     )
     .force('charge', forceManyBody<SimNode>().strength(-420).distanceMax(520))
-    .force('x', forceX<SimNode>(width / 2).strength(0.03))
-    .force('y', forceY<SimNode>(height / 2).strength(0.045))
+    .force('x', forceX<SimNode>(width / 2).strength(0.012))
+    .force('y', forceY<SimNode>(height / 2).strength(0.07))
     .force('collide', forceCollide<SimNode>(R + 34))
     .stop();
 

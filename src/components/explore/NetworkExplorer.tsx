@@ -13,6 +13,7 @@ import { isMacLike, isTypingTarget, useMediaQuery, useMounted, WIDE_LAYOUT_QUERY
 import { ExplorerContext, type ExplorerState, type GuideStep } from './ExplorerContext';
 import { GraphView } from './GraphView';
 import { TableView } from './TableView';
+import { TypeFilters } from './TypeFilters';
 import { DetailsPanel } from './DetailsPanel';
 import { KeyboardHelp } from './KeyboardHelp';
 import { CloseIcon, SearchIcon } from './icons';
@@ -50,6 +51,8 @@ export function NetworkExplorer({ data, layout: givenLayout }: { data: GraphData
   const view: ExploreView = pathname?.startsWith('/table') ? 'table' : 'map';
   const mounted = useMounted();
   const wide = useMediaQuery(WIDE_LAYOUT_QUERY, true);
+  // Room for the filters inline beside the search box; otherwise they fold into a menu.
+  const roomy = useMediaQuery('(min-width: 1100px)', true);
 
   const index = useMemo(() => indexGraph(data), [data]);
   // The layout is computed at build time and passed in; tests may omit it.
@@ -318,7 +321,8 @@ export function NetworkExplorer({ data, layout: givenLayout }: { data: GraphData
                 </kbd>
               )}
             </search>
-            {/* Read with the search box; shown on screen in the legend or above the table. */}
+            <TypeFilters variant={roomy ? 'row' : 'menu'} />
+            {/* Read with the search box. */}
             <p id="search-status" className="sr-only">
               {statusText}
             </p>

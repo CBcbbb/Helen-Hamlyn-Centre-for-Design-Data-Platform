@@ -12,16 +12,16 @@ import { CollapseIcon, ExpandIcon } from './icons';
  * in a small panel at the top left, as in the original platform; on a narrow
  * screen the panel folds away behind a button. Above the table it is a row.
  */
-export function TypeFilters({ variant }: { variant: 'panel' | 'row' }) {
+export function TypeFilters({ variant }: { variant: 'menu' | 'row' }) {
   const { visibleTypes, filters } = useExplorer();
-  const { totals, toggleType, statusText, wide } = filters;
+  const { totals, toggleType, statusText } = filters;
   const [open, setOpen] = useState(false);
   const id = useId();
 
   const list = (
     <fieldset className="min-w-0">
       <legend className="sr-only">Show entity types</legend>
-      <ul className={variant === 'panel' ? 'space-y-0.5' : '-mx-1 flex flex-wrap gap-x-1'}>
+      <ul className={variant === 'menu' ? 'space-y-0.5' : 'flex flex-nowrap gap-x-0.5'}>
         {BROWSE_ORDER.map((t) => (
           <li key={t}>
             <label className="group relative flex min-h-10 cursor-pointer select-none items-center gap-2.5 rounded-md px-2 text-[0.9375rem] text-ink ring-accent transition-colors hover:bg-surface has-[:focus-visible]:ring-2">
@@ -54,67 +54,35 @@ export function TypeFilters({ variant }: { variant: 'panel' | 'row' }) {
     </fieldset>
   );
 
-  if (variant === 'row') {
-    return (
-      <div className="js-only flex flex-wrap items-center justify-between gap-x-6 gap-y-1">
-        {list}
-        <p className="meta" aria-hidden="true">
-          {statusText}
-        </p>
-      </div>
-    );
-  }
-
-  const body = (
-    <>
-      {list}
-      <div className="mt-2 border-t border-rule px-2 pt-2.5">
-        <p className="meta" aria-hidden="true">
-          {statusText}
-        </p>
-        {wide && (
-          <ul className="meta mt-1.5 space-y-0.5 text-[0.8125rem]">
-            <li>Hover or focus an entry for its connections</li>
-            <li>Select it for details</li>
-            <li>Arrow keys move between entries</li>
-          </ul>
-        )}
-      </div>
-    </>
-  );
+  if (variant === 'row') return <div className="js-only flex-none">{list}</div>;
 
   return (
-    <div className="js-only absolute left-3 top-3 z-10 w-[min(15.5rem,calc(100%-1.5rem))] md:left-4 md:top-4">
-      {wide ? (
-        <div className="rounded-xl bg-paper/95 p-2 shadow-[0_1px_2px_rgb(34_33_42/0.08),0_10px_30px_-14px_rgb(34_33_42/0.3)] ring-1 ring-rule backdrop-blur-sm">
-          {body}
-        </div>
-      ) : (
-        <>
-          <button
-            type="button"
-            aria-expanded={open}
-            aria-controls={id}
-            onClick={() => setOpen((v) => !v)}
-            className="inline-flex min-h-10 items-center gap-2 rounded-full bg-paper/95 px-3.5 text-[0.875rem] font-medium text-ink shadow-[0_1px_2px_rgb(34_33_42/0.08),0_8px_24px_-12px_rgb(34_33_42/0.25)] ring-1 ring-rule"
-          >
-            <span className="flex gap-0.5" aria-hidden="true">
-              {BROWSE_ORDER.map((t) => (
-                <TypeMark key={t} type={t} size="0.6em" />
-              ))}
-            </span>
-            Filters
-            {open ? <ExpandIcon /> : <CollapseIcon />}
-          </button>
-          <div
-            id={id}
-            hidden={!open}
-            className="mt-2 rounded-xl bg-paper p-2 shadow-[0_10px_30px_-14px_rgb(34_33_42/0.35)] ring-1 ring-rule"
-          >
-            {body}
-          </div>
-        </>
-      )}
+    <div className="js-only relative flex-none">
+      <button
+        type="button"
+        aria-expanded={open}
+        aria-controls={id}
+        onClick={() => setOpen((v) => !v)}
+        className="inline-flex min-h-10 items-center gap-1.5 rounded-full px-3 text-[0.875rem] font-medium text-ink ring-1 ring-control"
+      >
+        <span className="flex gap-0.5" aria-hidden="true">
+          {BROWSE_ORDER.map((t) => (
+            <TypeMark key={t} type={t} size="0.55em" />
+          ))}
+        </span>
+        <span className="max-sm:sr-only">Filters</span>
+        {open ? <ExpandIcon /> : <CollapseIcon />}
+      </button>
+      <div
+        id={id}
+        hidden={!open}
+        className="absolute right-0 top-12 z-40 w-60 rounded-xl bg-paper p-2 shadow-[0_10px_30px_-14px_rgb(34_33_42/0.35)] ring-1 ring-rule"
+      >
+        {list}
+        <p className="meta mt-2 border-t border-rule px-2 pt-2" aria-hidden="true">
+          {statusText}
+        </p>
+      </div>
     </div>
   );
 }

@@ -10,7 +10,6 @@ import { excerpt } from '@/lib/text';
 import { useMounted } from '@/lib/hooks';
 import { TypeMark } from '../TypeMark';
 import { useExplorer } from './ExplorerContext';
-import { TypeFilters } from './TypeFilters';
 
 type SortKey = 'type' | 'name';
 
@@ -53,7 +52,6 @@ export function TableView() {
 
   return (
     <div className="mx-auto max-w-[78rem] px-4 pb-20 pt-4 md:px-6">
-      <TypeFilters variant="row" />
       {rows.length === 0 ? (
         <p className="lead mt-10">
           {searching ? `No entries match “${searchTerm.trim()}”.` : 'All entity types are filtered out. Turn one back on to see entries.'}
