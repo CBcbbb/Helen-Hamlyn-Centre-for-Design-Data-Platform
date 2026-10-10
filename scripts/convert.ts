@@ -7,30 +7,13 @@
  * The JSON is imported at build time by the Next.js app, so every entity page
  * is generated statically. Never hand-edit the JSON: edit the CSVs and rebuild.
  */
-import fs from 'node:fs';
 import path from 'node:path';
-import { convert, FILE_CONFIG } from '../src/lib/convert';
-
-const ROOT = path.resolve(__dirname, '..');
-const DATA_DIR = path.join(ROOT, 'data');
-const OUTPUT_PATH = path.join(ROOT, 'src', 'data', 'graphData.json');
-const REPORT_PATH = path.join(ROOT, 'reports', 'data-report.json');
-
-function read(file: string): string | undefined {
-  const p = path.join(DATA_DIR, file);
-  return fs.existsSync(p) ? fs.readFileSync(p, 'utf-8') : undefined;
-}
-
-function write(p: string, value: unknown) {
-  fs.mkdirSync(path.dirname(p), { recursive: true });
-  fs.writeFileSync(p, `${JSON.stringify(value, null, 2)}\n`, 'utf-8');
-}
+import { buildData, OUTPUT_PATH, REPORT_PATH, ROOT } from '../src/lib/build-data';
 
 function main() {
   console.log('Converting CSVs to graphData.json…\n');
 
-  const files = Object.fromEntries(FILE_CONFIG.map(({ file }) => [file, read(file)]));
-  const { data, report, warnings } = convert({ files, links: read('LINKS.csv') });
+  const { data, report, warnings } = buildData();
 
   for (const w of warnings) console.warn(`  Warning: ${w}`);
   for (const [file, c] of Object.entries(report.counts)) {
@@ -52,8 +35,6 @@ function main() {
     for (const [label, n] of flagged) console.log(`  - ${n} ${label}`);
   }
 
-  write(OUTPUT_PATH, data);
-  write(REPORT_PATH, report);
   console.log(`\nDone. Output: ${path.relative(ROOT, OUTPUT_PATH)}`);
   console.log(`Report: ${path.relative(ROOT, REPORT_PATH)}`);
 }
