@@ -78,14 +78,35 @@ const PLACEHOLDERS = new Set(['/', '-', 'n/a', 'N/A']);
 /** LINKS.csv still uses the spreadsheet's original word for partners. */
 const LINK_TYPE_ALIASES: Record<string, NodeType> = { Institutions: 'Partners' };
 
-export function parseCsv(content: string): Record<string, string>[] {
-  return parse(content, {
+export interface CsvRow {
+  record: Record<string, string>;
+  /** Line in the file where the record starts (header is line 1). */
+  line: number;
+}
+
+/**
+ * Parse CSV text into records, each with the file line it starts on. Cells
+ * often contain line breaks, so "index + 2" would point at the wrong line.
+ */
+export function parseCsvWithLines(content: string): CsvRow[] {
+  const rows = parse(content, {
     columns: true,
     skip_empty_lines: true,
     relax_column_count: true,
     trim: true,
     bom: true,
-  }) as Record<string, string>[];
+    info: true,
+  }) as unknown as { record: Record<string, string>; info: { lines: number } }[];
+  let prevEnd = 1; // header line
+  return rows.map(({ record, info }) => {
+    const line = prevEnd + 1;
+    prevEnd = info.lines;
+    return { record, line };
+  });
+}
+
+export function parseCsv(content: string): Record<string, string>[] {
+  return parseCsvWithLines(content).map((r) => r.record);
 }
 
 /** Normalise line endings and collapse runs of blank lines. */
@@ -197,12 +218,11 @@ export function convert({ files, links, now = new Date() }: ConvertInput): Conve
   for (const { file, type, headers } of FILE_CONFIG) {
     const content = files[file];
     if (content === undefined) warnings.push(`${file} not found`);
-    const rows = content ? parseCsv(content) : [];
+    const rows = content ? parseCsvWithLines(content) : [];
     const count = { total: rows.length, parsed: 0, skipped: 0 };
     report.counts[file] = count;
 
-    rows.forEach((row, i) => {
-      const csvRow = i + 2; // header is row 1
+    rows.forEach(({ record: row, line: csvRow }) => {
       const placeholders: { field: string; value: string }[] = [];
       const node = rowToNode(row, type, headers, (field, value) => placeholders.push({ field, value }));
 
@@ -273,12 +293,11 @@ function assignSlugs(nodes: GraphNode[], report: DataReport) {
 
 function parseLinks(content: string, nodes: GraphNode[], report: DataReport): GraphLink[] {
   const byId = new Map(nodes.map((n) => [n.id, n]));
-  const rows = parseCsv(content);
+  const rows = parseCsvWithLines(content);
   const seen = new Set<string>();
   const out: GraphLink[] = [];
 
-  rows.forEach((row, i) => {
-    const csvRow = i + 2;
+  rows.forEach(({ record: row, line: csvRow }) => {
     const source = (row.SourceID ?? '').trim();
     const target = (row.TargetID ?? '').trim();
     if (!source || !target) return;

@@ -64,7 +64,8 @@ function WidePanel({ node, onClose }: { node: GraphNode; onClose: () => void }) 
   // Move focus to the panel's heading whenever a new entry is shown.
   useEffect(() => {
     ref.current?.querySelector<HTMLElement>('#details-title')?.focus({ preventScroll: true });
-    ref.current?.querySelector('[data-scroll]')?.scrollTo({ top: 0 });
+    const scroller = ref.current?.querySelector<HTMLElement>('[data-scroll]');
+    if (scroller) scroller.scrollTop = 0;
   }, [node.id]);
 
   useEffect(() => {
