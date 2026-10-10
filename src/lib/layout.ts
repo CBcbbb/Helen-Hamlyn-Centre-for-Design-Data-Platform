@@ -39,7 +39,7 @@ interface SimNode extends SimulationNodeDatum {
 
 export function computeLayout(data: GraphData): Layout {
   const perColumn = Math.max(1, ...COLUMN_ORDER.map((t) => data.nodes.filter((n) => n.type === t).length));
-  const height = Math.max(640, perColumn * 44 + 160);
+  const height = Math.max(600, perColumn * 38 + 140);
   const columnX = (t: NodeType) => COLUMN_X[COLUMN_ORDER.indexOf(t)] * LAYOUT_WIDTH;
 
   // Initial positions: in column, spread vertically in name order, so the
@@ -72,20 +72,38 @@ export function computeLayout(data: GraphData): Layout {
 
   for (let i = 0; i < 400; i++) sim.tick();
 
-  // Snap x exactly to the column (the x force gets close, not exact) and
-  // keep everything inside the canvas.
+  // Snap x exactly to the column (the x force gets close, not exact), then
+  // within each column keep the simulated order but enforce a minimum gap so
+  // labels never overlap, and fit the result to the canvas.
+  const MIN_GAP = 30;
+  const top = 84;
+  const bottom = 48;
   const positions: Record<string, Position> = {};
-  const ys = nodes.map((n) => n.y ?? 0);
-  const minY = Math.min(...ys);
-  const maxY = Math.max(...ys);
-  const span = Math.max(1, maxY - minY);
-  const top = 96;
-  const usable = height - top - 48;
-  for (const n of nodes) {
-    positions[n.id] = {
-      x: Math.round(columnX(n.type)),
-      y: Math.round(top + (((n.y ?? 0) - minY) / span) * usable),
-    };
+  const columnYs = new Map<NodeType, { id: string; y: number }[]>();
+  for (const t of COLUMN_ORDER) {
+    const list = nodes
+      .filter((n) => n.type === t)
+      .map((n) => ({ id: n.id, y: n.y ?? 0 }))
+      .sort((a, b) => a.y - b.y);
+    if (!list.length) continue;
+    // Normalise to the usable height, then push apart where too close.
+    const minY = list[0].y;
+    const maxY = list[list.length - 1].y;
+    const span = Math.max(1, maxY - minY);
+    const usable = height - top - bottom;
+    for (const item of list) item.y = top + ((item.y - minY) / span) * usable;
+    for (let i = 1; i < list.length; i++) list[i].y = Math.max(list[i].y, list[i - 1].y + MIN_GAP);
+    // If pushing ran past the bottom, pull back up from the end.
+    const limit = height - bottom;
+    if (list[list.length - 1].y > limit) {
+      list[list.length - 1].y = limit;
+      for (let i = list.length - 2; i >= 0; i--) list[i].y = Math.min(list[i].y, list[i + 1].y - MIN_GAP);
+    }
+    columnYs.set(t, list);
+  }
+  const shift = Math.min(0, ...[...columnYs.values()].map((l) => l[0].y - top));
+  for (const [t, list] of columnYs) {
+    for (const item of list) positions[item.id] = { x: Math.round(columnX(t)), y: Math.round(item.y - shift) };
   }
 
   return {

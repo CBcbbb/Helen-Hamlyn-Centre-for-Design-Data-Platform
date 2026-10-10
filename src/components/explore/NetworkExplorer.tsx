@@ -150,7 +150,7 @@ export function NetworkExplorer({ data }: { data: GraphData }) {
 
   return (
     <ExplorerContext.Provider value={ctx}>
-      <div className="flex h-[calc(100dvh-7.25rem)] min-h-[34rem] flex-col md:h-[calc(100dvh-4.75rem)]">
+      <div className="flex flex-col md:h-[calc(100dvh-4.75rem)] md:min-h-[34rem]">
         <div className="border-b border-rule bg-paper">
           <div className="flex flex-col gap-3 px-4 py-3 md:px-6 lg:flex-row lg:items-center lg:gap-6">
             <div className="flex items-center justify-between gap-4 lg:contents">
@@ -199,7 +199,7 @@ export function NetworkExplorer({ data }: { data: GraphData }) {
                     onSearchChange('');
                   }
                 }}
-                placeholder="Search names, descriptions, methods"
+                placeholder="Search the network"
                 aria-describedby="search-status search-hint"
                 className="h-11 w-full rounded-full border-0 bg-surface pl-11 pr-20 text-base text-ink ring-1 ring-rule transition-shadow placeholder:text-ink-muted hover:ring-rule-strong focus:bg-paper focus:outline-none focus-visible:ring-2 focus-visible:ring-accent [&::-webkit-search-cancel-button]:hidden"
               />
@@ -314,7 +314,10 @@ export function NetworkExplorer({ data }: { data: GraphData }) {
         </div>
 
         <div className="relative flex min-h-0 flex-1">
-          <section aria-label={view === 'map' ? 'Network map' : 'Table of all entries'} className="min-w-0 flex-1">
+          <section
+            aria-label={view === 'map' ? 'Network map' : 'Table of all entries'}
+            className={`min-w-0 flex-1 ${view === 'map' ? 'h-[72dvh] min-h-[26rem] md:h-auto md:min-h-0' : ''}`}
+          >
             {view === 'map' ? <GraphView /> : <TableView />}
           </section>
           <DetailsPanel onClose={closeDetails} />

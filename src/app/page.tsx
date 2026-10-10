@@ -5,7 +5,7 @@ import type { GraphNode, MethodNode, PersonNode } from '@/lib/types';
 import { getFeaturedNeighbourhood } from '@/lib/featured';
 import { hrefFor, nodesOfType, graph } from '@/lib/data';
 import { countByType, primaryText } from '@/lib/graph';
-import { excerpt, paragraphs, toPlain } from '@/lib/text';
+import { excerpt, isHttpUrl, paragraphs, toPlain, urlLabel } from '@/lib/text';
 import { TYPE_META, countLabel } from '@/lib/types-meta';
 import { TypeMark } from '@/components/TypeMark';
 import { Paragraphs } from '@/components/RichText';
@@ -31,67 +31,78 @@ export default function Home() {
   const legacy = paragraphs(project.legacy_impacts);
   const namedPartners = toPlain(project.involved_institutions);
   const relatedShown = related.slice(0, 6);
+  const budget = toPlain(project.budget);
+  const website = project.website?.find(isHttpUrl);
 
   return (
     <div className="pb-8">
       {/* Intro */}
-      <section className="wrap pb-14 pt-12 md:pb-20 md:pt-20" aria-labelledby="intro-heading">
+      <section className="wrap pb-16 pt-12 md:pb-24 md:pt-20" aria-labelledby="intro-heading">
         <h1 id="intro-heading" className="display max-w-[15ch] text-[clamp(2.75rem,1.6rem+5vw,5.75rem)]">
           Start with one project, then follow where it leads.
         </h1>
-        <div className="mt-8 grid gap-x-16 gap-y-6 md:mt-10 md:grid-cols-[minmax(0,36rem)_1fr]">
-          <p className="lead text-ink">
-            This platform maps research from the Helen Hamlyn Centre for Design, the longest-running design research
-            centre at the Royal College of Art: {countLabel(counts.Projects, 'Projects')}, the{' '}
-            {countLabel(counts.Methods, 'Methods')} they used, and the {countLabel(counts.People, 'People')} and{' '}
-            {counts.Partners} partner organisations around them. It is for artists, researchers, the public and funders
-            looking for methods they can adapt to their own work.
-          </p>
-          <p className="meta self-end md:max-w-[30ch] md:justify-self-end">
-            People, partners, projects and methods each have their own page, so any of them can be a starting point.
-          </p>
-        </div>
+        <p className="lead mt-8 text-ink md:mt-10">
+          This platform maps research from the Helen Hamlyn Centre for Design at the Royal College of Art:{' '}
+          {countLabel(counts.Projects, 'Projects')}, the {countLabel(counts.Methods, 'Methods')} they used, and the{' '}
+          {countLabel(counts.People, 'People')} and {counts.Partners} partner organisations around them. It is for
+          artists, researchers, the public and funders looking for methods to adapt to their own work.
+        </p>
+        <p className="meta mt-5 max-w-[56ch] text-[0.9375rem]">
+          Below is one project, then the people and methods behind it, then where they lead. Every name has its own
+          page, so you can start from any of them.
+        </p>
       </section>
 
       <ol className="wrap" aria-label="From one project outwards">
         {/* Step 1: the project */}
-        <Step label="Start here" heading="One project, explained on its own" id="featured">
-          <article aria-labelledby="featured-title">
-            <p className="heading mb-3 inline-flex items-center gap-2 text-[0.9375rem] text-projects">
+        <Step label="Start here" id="featured" heading={project.name} headingStyle="project" kicker={
+            <span className="inline-flex items-center gap-2 text-projects">
               <TypeMark type="Projects" size="0.7em" />
-              Featured project
-            </p>
-            <h3 id="featured-title" className="display text-[clamp(2.25rem,1.5rem+3vw,3.75rem)]">
-              <Link href={hrefFor(project)} className="text-ink no-underline hover:underline decoration-2 underline-offset-[0.12em]">
-                {project.name}
-              </Link>
-            </h3>
-            <Paragraphs value={project.description} className="mt-6 text-ink" />
-
-            {(legacy.length > 0 || namedPartners) && (
-              <dl className="mt-8 grid max-w-[66ch] gap-x-10 gap-y-5 border-t border-rule pt-6 sm:grid-cols-[10rem_1fr]">
+              Project
+            </span>
+          }>
+          <div className="grid gap-x-14 gap-y-10 xl:grid-cols-[minmax(0,1fr)_17rem]">
+            <div className="min-w-0">
+              <Paragraphs value={project.description} className="text-ink" />
+              <p className="mt-8">
+                <Link href={hrefFor(project)} className="btn btn-secondary">
+                  Read the full project record
+                </Link>
+              </p>
+            </div>
+            {(legacy.length > 0 || namedPartners || budget || website) && (
+              <dl className="space-y-5 border-t border-rule pt-5 text-[0.9375rem] xl:border-l xl:border-t-0 xl:pl-8 xl:pt-1">
                 {legacy.length > 0 && (
-                  <>
+                  <div>
                     <dt className="meta">Legacy and impact</dt>
-                    <dd className="font-serif text-[1.0625rem] leading-relaxed first-letter:uppercase">
-                      {legacy.join(' ')}
-                    </dd>
-                  </>
+                    <dd className="mt-1 leading-snug first-letter:uppercase">{legacy.join(' ')}</dd>
+                  </div>
+                )}
+                {budget && (
+                  <div>
+                    <dt className="meta">Budget</dt>
+                    <dd className="mt-1 leading-snug">{budget}</dd>
+                  </div>
                 )}
                 {namedPartners && (
-                  <>
+                  <div>
                     <dt className="meta">Partners named in the record</dt>
-                    <dd className="font-serif text-[1.0625rem] leading-relaxed">{namedPartners}</dd>
-                  </>
+                    <dd className="mt-1 leading-snug">{namedPartners}</dd>
+                  </div>
+                )}
+                {website && (
+                  <div>
+                    <dt className="meta">Project archive</dt>
+                    <dd className="mt-1 leading-snug">
+                      <a href={website} className="link" rel="noopener noreferrer">
+                        {urlLabel(website)}
+                      </a>
+                    </dd>
+                  </div>
                 )}
               </dl>
             )}
-            <p className="mt-8">
-              <Link href={hrefFor(project)} className="btn btn-secondary">
-                Read the full project record
-              </Link>
-            </p>
-          </article>
+          </div>
         </Step>
 
         {/* Step 2: people and methods */}
@@ -114,9 +125,9 @@ export default function Home() {
             <div className="grid gap-x-12 gap-y-12 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
               {relatedShown.length > 0 && (
                 <section aria-labelledby="related-heading">
-                  <h4 id="related-heading" className="heading mb-1 text-[1.0625rem]">
+                  <h3 id="related-heading" className="heading mb-1 text-[1.0625rem]">
                     Other projects that share them
-                  </h4>
+                  </h3>
                   <p className="meta mb-4">
                     {related.length > relatedShown.length
                       ? `The ${relatedShown.length} with most in common, of ${related.length}.`
@@ -137,9 +148,9 @@ export default function Home() {
               )}
               {partners.length > 0 && (
                 <section aria-labelledby="partners-heading">
-                  <h4 id="partners-heading" className="heading mb-1 text-[1.0625rem]">
+                  <h3 id="partners-heading" className="heading mb-1 text-[1.0625rem]">
                     Partner organisations around them
-                  </h4>
+                  </h3>
                   <p className="meta mb-4">Linked to the project&rsquo;s people in the network.</p>
                   <ul className="border-t border-rule">
                     {partners.map(({ node, via }) => (
@@ -212,28 +223,41 @@ function joinNames(names: string[]): string {
 function Step({
   label,
   heading,
+  headingStyle = 'step',
+  kicker,
   id,
   last = false,
   children,
 }: {
   label: string;
   heading: string;
+  /** 'project' sets the heading as a large display title. */
+  headingStyle?: 'step' | 'project';
+  kicker?: ReactNode;
   id: string;
   last?: boolean;
   children: ReactNode;
 }) {
   return (
-    <li className="grid grid-cols-[1.25rem_minmax(0,1fr)] gap-x-4 md:grid-cols-[12rem_minmax(0,1fr)] md:gap-x-10">
+    <li className="grid grid-cols-[1.25rem_minmax(0,1fr)] gap-x-4 md:grid-cols-[11rem_minmax(0,1fr)] md:gap-x-10">
       <div className="relative" aria-hidden="true">
-        <span className="absolute left-[0.3125rem] top-[0.55rem] size-2.5 rounded-full bg-ink md:left-auto md:right-[-1.3125rem]" />
+        <span className="absolute left-[0.3125rem] top-[0.5rem] size-2.5 rounded-full bg-ink md:left-auto md:right-[-1.3125rem]" />
         {!last && (
-          <span className="absolute bottom-0 left-[0.59rem] top-[1.6rem] w-px bg-rule-strong md:left-auto md:right-[-0.9875rem]" />
+          <span className="absolute bottom-0 left-[0.59rem] top-[1.5rem] w-px bg-rule-strong md:left-auto md:right-[-0.9875rem]" />
         )}
-        <span className="meta hidden pr-6 pt-0.5 text-right md:block">{label}</span>
+        <span className="meta hidden pr-6 text-right md:block">{label}</span>
       </div>
-      <section aria-labelledby={`${id}-heading`} className={`min-w-0 md:border-l md:border-transparent md:pl-10 ${last ? 'pb-6' : 'pb-16 md:pb-24'}`}>
-        <p className="meta md:hidden">{label}</p>
-        <h2 id={`${id}-heading`} className="heading mb-8 text-[1.375rem] text-ink-muted md:text-[1.5rem]">
+      <section aria-labelledby={`${id}-heading`} className={`min-w-0 md:pl-10 ${last ? 'pb-6' : 'pb-16 md:pb-24'}`}>
+        <p className="meta mb-1 md:hidden">{label}</p>
+        {kicker && <p className="heading mb-3 text-[0.9375rem]">{kicker}</p>}
+        <h2
+          id={`${id}-heading`}
+          className={
+            headingStyle === 'project'
+              ? 'display mb-8 text-[clamp(2.25rem,1.5rem+3vw,3.75rem)]'
+              : 'heading mb-8 text-[1.5rem] md:text-[1.75rem]'
+          }
+        >
           {heading}
         </h2>
         {children}

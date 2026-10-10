@@ -80,7 +80,7 @@ export function GraphView() {
     const scene = sceneRef.current;
     if (!svg || !scene) return;
     const behaviour = d3zoom<SVGSVGElement, unknown>()
-      .scaleExtent([0.6, 4])
+      .scaleExtent([0.6, 6])
       .on('zoom', (event: { transform: ZoomTransform }) => {
         transformRef.current = event.transform;
         scene.setAttribute('transform', event.transform.toString());
@@ -88,10 +88,22 @@ export function GraphView() {
       });
     zoomRef.current = behaviour;
     select(svg).call(behaviour).on('dblclick.zoom', null);
+
+    // On a narrow screen the whole map would be too small to read, so open
+    // zoomed in to roughly full-size labels, at the top of the projects
+    // column, and let people pinch and drag from there.
+    const base = svg.clientWidth / viewWidth;
+    if (base > 0 && base < 0.6) {
+      const k = Math.min(6, 0.9 / base);
+      const projectsX = layout.columns.find((c) => c.type === 'Projects')?.x ?? 0;
+      const x = -(projectsX - 40 - 24) * k; // the scene is offset by -40
+      select(svg).call(behaviour.transform, zoomIdentity.translate(x, 0).scale(k));
+    }
     return () => {
       select(svg).on('.zoom', null);
     };
-  }, []);
+    // Set up once per layout; later visibility changes keep the current view.
+  }, [layout, viewWidth]);
 
   const duration = reducedMotion ? 0 : 280;
   const zoomBy = (factor: number) => {
@@ -201,9 +213,9 @@ export function GraphView() {
                   <text
                     key={c.type}
                     x={c.x - 6}
-                    y={44}
+                    y={46}
                     className="fill-ink-muted"
-                    style={{ font: '560 13px var(--font-display)' }}
+                    style={{ font: '600 14px var(--font-display)' }}
                   >
                     {TYPE_META[c.type].plural} ({counts[c.type]})
                   </text>
@@ -246,6 +258,7 @@ export function GraphView() {
                 const isMatch = !!searchTerm.trim() && matches.has(n.id);
                 const isSelected = selected?.id === n.id;
                 const r = 6 + Math.min(4, Math.sqrt(degree));
+                // Only emphasised entries keep a full-strength label.
                 const content = (
                   <>
                     <circle cx={0} cy={0} r={r + 6} className="focus-ring" />

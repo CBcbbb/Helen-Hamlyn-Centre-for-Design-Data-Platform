@@ -15,8 +15,8 @@ const LINKS = [
 export function NavLinks() {
   const pathname = usePathname() ?? '/';
   return (
-    <nav aria-label="Main">
-      <ul className="-mx-2 flex flex-wrap items-center gap-x-1 gap-y-0 text-[0.9375rem]">
+    <nav aria-label="Main" className="-mx-4 overflow-x-auto px-2 [scrollbar-width:none] md:mx-0 md:overflow-visible md:px-0 [&::-webkit-scrollbar]:hidden">
+      <ul className="flex items-center whitespace-nowrap text-[0.875rem] sm:text-[0.9375rem] md:-mx-2 md:gap-x-1">
         {LINKS.map(({ href, label }) => {
           const current = pathname === href ? 'page' : pathname.startsWith(`${href}/`) ? 'true' : undefined;
           return (
@@ -24,7 +24,7 @@ export function NavLinks() {
               <Link
                 href={href}
                 aria-current={current}
-                className="relative inline-flex min-h-11 items-center px-2 text-ink-muted no-underline transition-colors hover:text-ink aria-[current]:text-ink aria-[current]:after:absolute aria-[current]:after:inset-x-2 aria-[current]:after:bottom-2 aria-[current]:after:h-px aria-[current]:after:bg-ink"
+                className="relative inline-flex min-h-11 items-center px-[0.45rem] text-ink-muted sm:px-2 no-underline transition-colors hover:text-ink aria-[current]:text-ink aria-[current]:after:absolute aria-[current]:after:inset-x-[0.45rem] sm:aria-[current]:after:inset-x-2 aria-[current]:after:bottom-2 aria-[current]:after:h-px aria-[current]:after:bg-ink"
               >
                 {label}
               </Link>

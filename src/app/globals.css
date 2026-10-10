@@ -80,6 +80,7 @@
   --font-serif: var(--font-serif);
 }
 
+@layer base {
 /* ---------- Base ---------- */
 html {
   -webkit-text-size-adjust: 100%;
@@ -131,6 +132,9 @@ body {
   top: 1rem;
 }
 
+}
+
+@layer components {
 /* ---------- Typography ---------- */
 .display {
   font-family: var(--font-display);
@@ -320,7 +324,7 @@ kbd {
 }
 .graph-node text {
   font-family: var(--font-display);
-  font-size: 12.5px;
+  font-size: 14px;
   font-weight: 520;
   fill: var(--color-ink);
   paint-order: stroke;
@@ -345,7 +349,12 @@ kbd {
   font-weight: 680;
 }
 [data-dimmed='true'] {
-  opacity: 0.18;
+  opacity: 0.16;
+}
+.graph-node[data-dimmed='true'] {
+  opacity: 0.32;
+}
+
 }
 
 /* ---------- Motion ---------- */

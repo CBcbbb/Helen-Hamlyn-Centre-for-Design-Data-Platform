@@ -31,7 +31,7 @@ export function TableView() {
   }
 
   return (
-    <div className="h-full overflow-y-auto">
+    <div className="md:h-full md:overflow-y-auto">
       <div className="wrap space-y-14 pb-20 pt-8">
         {types.map((type) => {
           const meta = TYPE_META[type];
