@@ -340,9 +340,16 @@ kbd {
   user-select: none;
   pointer-events: none;
 }
+/* The type shape before a constellation name: a little smaller than the
+   name and lifted to sit on its x-height. */
+.graph-node tspan.star-glyph {
+  font-size: 0.72em;
+  dominant-baseline: auto;
+  baseline-shift: 0.12em;
+}
 /* Constellation labels: the name in its type's colour, bold and centred, as in the original platform. */
 .graph-node text.star-label {
-  font-size: 18px;
+  font-size: 22px;
   font-weight: 640;
   letter-spacing: 0;
   text-anchor: middle;

@@ -34,9 +34,9 @@ export const LABEL_MAX = 34;
  * bold and in its type's colour, centred under the entry's mark and wrapped
  * onto up to three lines.
  */
-export const STAR_FONT = 19;
-export const STAR_LINE = 23;
-export const STAR_CHAR = 10.5;
+export const STAR_FONT = 22;
+export const STAR_LINE = 27;
+export const STAR_CHAR = 11.6;
 const STAR_WRAP = 18;
 const STAR_MAX_LINES = 3;
 
@@ -67,7 +67,7 @@ export function wrapLabel(name: string): string[] {
 export function starBox(name: string): { left: number; right: number; top: number; bottom: number } {
   const lines = wrapLabel(name);
   // The name is the node, centred on its point; a small type mark sits before the first line.
-  const w = Math.max(...lines.map((l, i) => l.length * STAR_CHAR + (i === 0 ? 22 : 0))) + 8;
+  const w = Math.max(...lines.map((l, i) => l.length * STAR_CHAR + (i === 0 ? 20 : 0))) + 8;
   const h = lines.length * STAR_LINE + 6;
   return { left: -w / 2, right: w / 2, top: -h / 2, bottom: h / 2 };
 }

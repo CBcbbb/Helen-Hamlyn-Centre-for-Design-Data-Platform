@@ -46,6 +46,7 @@ const ARRANGEMENT_LABEL: Record<Arrangement, string> = {
   columns: 'By type',
 };
 
+const GLYPH: Record<string, string> = { Projects: '◆', Methods: '▲', People: '●', Partners: '■' };
 const clamp01 = (v: number) => Math.max(0, Math.min(1, v));
 const labelWidth = (name: string) => shortLabel(name).length * 7.7 + 4;
 /** How much of the constellation label is showing at a given progress towards columns (they crossfade mid-move). */
@@ -515,6 +516,7 @@ export function GraphView() {
                   return `translate(${mx - r} ${my - r}) scale(${(r * 2) / 10})`;
                 })()}
                 fill={`var(--color-${meta.token})`}
+                style={{ opacity: 1 - starOp }}
               />
               {showLabel && starOp > 0 && (
                 <text
@@ -523,7 +525,13 @@ export function GraphView() {
                   style={{ opacity: starOp, fill: `var(--color-${meta.token}-text)` }}
                 >
                   {lines.map((line, i) => (
-                    <tspan key={i} x={i === 0 ? 11 : 0} y={-(lines.length * STAR_LINE) / 2 + STAR_LINE * (i + 0.74)}>
+                    <tspan key={i} x={0} y={-(lines.length * STAR_LINE) / 2 + STAR_LINE * (i + 0.74)}>
+                      {/* The type's shape is set as a glyph in the line itself, so it sits right against the name. */}
+                      {i === 0 && (
+                        <tspan className="star-glyph" style={{ fill: `var(--color-${meta.token})` }}>
+                          {GLYPH[n.type]}{'\u2009'}
+                        </tspan>
+                      )}
                       {line}
                     </tspan>
                   ))}
