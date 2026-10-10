@@ -655,11 +655,11 @@ export function GraphView() {
       {mounted && (
         <fieldset className="absolute right-3 top-3 z-10 md:right-4 md:top-4">
           <legend className="sr-only">Arrange the map</legend>
-          <div className="flex rounded-full bg-paper/95 p-0.5 shadow-[0_1px_2px_rgb(34_33_42/0.08),0_8px_24px_-12px_rgb(34_33_42/0.25)] ring-1 ring-rule backdrop-blur-sm">
+          <div className="flex rounded-full bg-surface/95 p-0.5 ring-1 ring-rule backdrop-blur-sm">
             {(['constellation', 'columns'] as const).map((a) => (
               <label
                 key={a}
-                className="relative inline-flex min-h-10 cursor-pointer select-none items-center gap-2 rounded-full px-3 text-[0.875rem] font-medium text-ink-muted transition-colors hover:text-ink has-[:checked]:bg-ink has-[:checked]:text-paper has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-accent sm:px-3.5"
+                className="relative inline-flex min-h-8 cursor-pointer select-none items-center gap-1.5 rounded-full px-2.5 text-[0.8125rem] font-medium text-ink-muted transition-colors hover:text-ink has-[:checked]:bg-paper has-[:checked]:text-ink has-[:checked]:shadow-[0_1px_2px_rgb(34_33_42/0.12)] has-[:checked]:ring-1 has-[:checked]:ring-rule-strong has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-accent sm:px-3 [&_svg]:size-4"
               >
                 <input
                   type="radio"
