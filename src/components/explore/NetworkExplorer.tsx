@@ -201,7 +201,7 @@ export function NetworkExplorer({ data }: { data: GraphData }) {
                 }}
                 placeholder="Search the network"
                 aria-describedby="search-status search-hint"
-                className="h-11 w-full rounded-full border-0 bg-surface pl-11 pr-20 text-base text-ink ring-1 ring-rule transition-shadow placeholder:text-ink-muted hover:ring-rule-strong focus:bg-paper focus:outline-none focus-visible:ring-2 focus-visible:ring-accent [&::-webkit-search-cancel-button]:hidden"
+                className="h-11 w-full rounded-full border-0 bg-surface pl-11 pr-20 text-base text-ink ring-1 ring-control transition-shadow placeholder:text-ink-muted hover:ring-ink focus:bg-paper focus:outline-none focus-visible:ring-2 focus-visible:ring-accent [&::-webkit-search-cancel-button]:hidden"
               />
               <span id="search-hint" className="sr-only">
                 Shortcut: {mod} K.
@@ -242,7 +242,7 @@ export function NetworkExplorer({ data }: { data: GraphData }) {
                     />
                     <span
                       aria-hidden="true"
-                      className="grid size-4 place-items-center rounded-[4px] ring-1 ring-rule-strong peer-checked:ring-0"
+                      className="grid size-4 place-items-center rounded-[4px] ring-1 ring-control ring-inset peer-checked:ring-0"
                       style={{ background: visibleTypes[t] ? `var(--color-${TYPE_META[t].token})` : 'transparent' }}
                     >
                       {visibleTypes[t] && (
