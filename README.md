@@ -78,7 +78,7 @@ Both share one frame, so switching is a pure movement of the same entries: each 
 
 ## Colours
 
-All colours are CSS custom properties in `src/app/globals.css`. The HHCD brand colours are unchanged from the original: people `#5F5BA3`, partners `#DC2680`, projects `#EB631A`, methods `#148D66`, accent `#00837F`, with their tint, hover and ring variants. The rebuild adds neutrals, a control-border colour and darker `*-text` variants for type set in colour. Run `npm run contrast` after changing any value.
+All colours are CSS custom properties in `src/app/globals.css`. The HHCD brand colours are unchanged from the original: people `#5F5BA3`, partners `#DC2680`, projects `#EB631A`, methods `#148D66`, accent `#00837F`, with their tint, hover and ring variants. The rebuild adds neutrals and a control-border colour. On the map, names are set in the original brand colours, bold and at least 18.67px on screen (WCAG large text, 3:1); if you zoom out below that, they switch to darker `*-text` variants. Small coloured text elsewhere uses those variants for Projects and Methods; People and Partners pass 4.5:1 in their original colours. Run `npm run contrast` after changing any value.
 
 Each entity type also has a shape (people circles, partners squares, projects diamonds, methods triangles), so type is never shown by colour alone.
 

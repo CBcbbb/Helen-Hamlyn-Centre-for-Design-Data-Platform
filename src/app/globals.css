@@ -42,7 +42,7 @@
      these darker values are used whenever the colour carries text (≥4.5:1
      on paper, surface and the type's own tint). People's base already passes. */
   --color-people-text: var(--color-people);
-  --color-partners-text: var(--color-partners-hover);
+  --color-partners-text: var(--color-partners); /* the brand colour already passes 4.5:1 (4.53:1) */
   --color-projects-text: #a8470f;
   --color-methods-text: var(--color-methods-hover);
   --color-accent-text: var(--color-accent-hover);
@@ -350,7 +350,7 @@ kbd {
 /* Constellation labels: the name in its type's colour, bold and centred, as in the original platform. */
 .graph-node text.star-label {
   font-size: 22px;
-  font-weight: 640;
+  font-weight: 700;
   letter-spacing: 0;
   text-anchor: middle;
   /* A hairline halo only: enough to keep a crossing line from cutting

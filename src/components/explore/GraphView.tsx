@@ -17,6 +17,7 @@ import {
   starBox,
   wrapLabel,
   STAR_LINE,
+  STAR_FONT,
   type Arrangement,
   type Position,
 } from '@/lib/layout';
@@ -47,6 +48,8 @@ const ARRANGEMENT_LABEL: Record<Arrangement, string> = {
 };
 
 const GLYPH: Record<string, string> = { Projects: '◆', Methods: '▲', People: '●', Partners: '■' };
+/** WCAG large text: 14pt bold. */
+const LARGE_TEXT_PX = 18.67;
 const clamp01 = (v: number) => Math.max(0, Math.min(1, v));
 const labelWidth = (name: string) => shortLabel(name).length * 7.7 + 4;
 /** How much of the constellation label is showing at a given progress towards columns (they crossfade mid-move). */
@@ -213,7 +216,8 @@ export function GraphView() {
   const openingTransform = useCallback(
     (w: number, h: number) => {
       const fit = fitTransform(w, h);
-      const k = Math.max(fit.k, w >= 768 ? 0.84 : 0.82);
+      // 0.86 keeps the 22px names at 18.9px on screen: large text.
+      const k = Math.max(fit.k, 0.86);
       if (k === fit.k) return fit;
       if (w >= 768) {
         return zoomIdentity.translate(w / 2 - (layout.width / 2) * k, h / 2 + 10 - (layout.height / 2) * k).scale(k);
@@ -551,7 +555,14 @@ export function GraphView() {
                 <text
                   className="star-label"
                   transform={scale !== 1 ? `scale(${scale})` : undefined}
-                  style={{ opacity: starOp, fill: `var(--color-${meta.token}-text)` }}
+                  style={{
+                    opacity: starOp,
+                    // The original brand colour whenever the name is large
+                    // text on screen (bold, 18.66px or more, where WCAG AA
+                    // asks for 3:1); the darker text-safe variant when zoomed
+                    // out below that.
+                    fill: STAR_FONT * k * scale >= LARGE_TEXT_PX ? `var(--color-${meta.token})` : `var(--color-${meta.token}-text)`,
+                  }}
                 >
                   {lines.map((line, i) => (
                     <tspan key={i} x={0} y={-(lines.length * STAR_LINE) / 2 + STAR_LINE * (i + 0.74)}>

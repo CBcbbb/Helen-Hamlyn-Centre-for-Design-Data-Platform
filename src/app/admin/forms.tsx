@@ -22,7 +22,7 @@ function Feedback({ state }: { state: FormState }) {
   return (
     <div role="status" aria-live="polite" className="min-h-6">
       {state.error && (
-        <p className="rounded-md bg-[var(--color-partners-tint)] px-4 py-3 text-[var(--color-partners-text)]">{state.error}</p>
+        <p className="rounded-md bg-[var(--color-partners-tint)] px-4 py-3 text-[var(--color-partners-hover)]">{state.error}</p>
       )}
       {state.message && (
         <p className="rounded-md bg-[var(--color-methods-tint)] px-4 py-3 text-[var(--color-methods-text)]">{state.message}</p>
