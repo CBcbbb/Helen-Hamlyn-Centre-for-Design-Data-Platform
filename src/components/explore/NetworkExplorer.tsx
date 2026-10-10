@@ -150,6 +150,11 @@ export function NetworkExplorer({ data }: { data: GraphData }) {
 
   return (
     <ExplorerContext.Provider value={ctx}>
+      {/* Without JavaScript, hide the controls that need it rather than show
+          a search box that does nothing. */}
+      <noscript>
+        <style>{'.js-only{display:none!important}'}</style>
+      </noscript>
       <div className="flex flex-col md:h-[calc(100dvh-4.75rem)] md:min-h-[34rem]">
         <div className="border-b border-rule bg-paper">
           <div className="flex flex-col gap-3 px-4 py-3 md:px-6 lg:flex-row lg:items-center lg:gap-6">
@@ -178,7 +183,7 @@ export function NetworkExplorer({ data }: { data: GraphData }) {
               </nav>
             </div>
 
-            <search className="relative flex-1 lg:max-w-md">
+            <search className="js-only relative flex-1 lg:max-w-md">
               <label htmlFor="network-search" className="sr-only">
                 Search names, descriptions and methods
               </label>
@@ -226,7 +231,7 @@ export function NetworkExplorer({ data }: { data: GraphData }) {
               )}
             </search>
 
-            <fieldset className="min-w-0">
+            <fieldset className="js-only min-w-0">
               <legend className="sr-only">Show entity types</legend>
               <div className="-mx-1 flex flex-wrap gap-1">
                 {BROWSE_ORDER.map((t) => (
@@ -263,7 +268,7 @@ export function NetworkExplorer({ data }: { data: GraphData }) {
             <button
               type="button"
               onClick={() => setHelpOpen(true)}
-              className="hidden min-h-10 items-center gap-2 rounded-full px-3 text-[0.9375rem] text-ink-muted hover:text-ink lg:inline-flex"
+              className="js-only hidden min-h-10 items-center gap-2 rounded-full px-3 text-[0.9375rem] text-ink-muted hover:text-ink lg:inline-flex"
               aria-label="Keyboard shortcuts"
               title="Keyboard shortcuts (?)"
             >
@@ -301,7 +306,7 @@ export function NetworkExplorer({ data }: { data: GraphData }) {
                   )
                 ) : (
                   <>
-                    Each entry links to its page. The{' '}
+                    Search and filters need JavaScript. Each entry links to its page, and the{' '}
                     <Link href="/explore/table" className="link">
                       table view
                     </Link>{' '}
@@ -324,9 +329,6 @@ export function NetworkExplorer({ data }: { data: GraphData }) {
         </div>
       </div>
 
-      <noscript>
-        <p className="wrap meta py-4">Search and filters need JavaScript. Every entry still links to its own page.</p>
-      </noscript>
 
       <div role="status" aria-live="polite" aria-atomic="true" className="sr-only">
         {announcement}

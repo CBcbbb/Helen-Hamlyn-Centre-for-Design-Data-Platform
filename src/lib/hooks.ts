@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useSyncExternalStore } from 'react';
+import { useSyncExternalStore } from 'react';
 
 /** Breakpoint at which the details panel sits beside the map instead of over it. */
 export const WIDE_LAYOUT_QUERY = '(min-width: 768px)';
@@ -33,16 +33,6 @@ export function useMounted(): boolean {
     () => true,
     () => false,
   );
-}
-
-/** Debounce a fast-changing value (used for screen reader announcements). */
-export function useDebounced<T>(value: T, delay: number): T {
-  const [debounced, setDebounced] = useState(value);
-  useEffect(() => {
-    const t = setTimeout(() => setDebounced(value), delay);
-    return () => clearTimeout(t);
-  }, [value, delay]);
-  return debounced;
 }
 
 export function isMacLike(): boolean {
