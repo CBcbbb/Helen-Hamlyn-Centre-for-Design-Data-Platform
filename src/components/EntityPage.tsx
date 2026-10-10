@@ -61,7 +61,14 @@ export function EntityPage({ node }: { node: GraphNode }) {
           {meta.singular}
         </p>
         <h1 className="display text-[clamp(2.25rem,1.6rem+3vw,4rem)]">{node.name}</h1>
-        {summary && <p className="meta mt-5 text-base">{summary}</p>}
+        {summary && (
+          <p className="meta mt-5 text-base">
+            {summary}{' '}
+            <a href="#connections-heading" className="link lg:hidden">
+              Jump to connections
+            </a>
+          </p>
+        )}
       </header>
 
       <div className="mt-10 grid gap-x-16 gap-y-14 md:mt-14 lg:grid-cols-[minmax(0,1fr)_20rem]">
@@ -77,7 +84,7 @@ export function EntityPage({ node }: { node: GraphNode }) {
           )}
         </div>
 
-        <aside aria-labelledby="connections-heading" className="lg:border-l lg:border-rule lg:pl-10">
+        <aside aria-labelledby="connections-heading" className="scroll-mt-6 border-t border-rule pt-8 lg:border-l lg:border-t-0 lg:pl-10 lg:pt-0">
           <h2 id="connections-heading" className="heading mb-5 text-[1.0625rem]">
             Connections
           </h2>
