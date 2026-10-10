@@ -511,7 +511,7 @@ export function GraphView() {
                   const t = 1 - starOp;
                   const mx = (-(lines[0].length * STAR_CHAR + 22) / 2 + 7) * scale * (1 - t);
                   const my = ((-(lines.length * STAR_LINE) / 2 + STAR_LINE * 0.5) * scale) * (1 - t);
-                  const r = R * (0.8 * (1 - t) + t);
+                  const r = R * (0.62 * (1 - t) + t);
                   return `translate(${mx - r} ${my - r}) scale(${(r * 2) / 10})`;
                 })()}
                 fill={`var(--color-${meta.token})`}
