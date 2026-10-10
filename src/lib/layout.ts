@@ -1,24 +1,81 @@
 /**
- * Network map layout.
+ * Network map layouts.
  *
- * The data has a natural order: partners connect to people, people to
- * projects, projects to methods. Instead of a free-floating force layout
- * (a "hairball"), each type is pulled towards its own column and the force
- * simulation only arranges entries vertically within it. The result reads
- * left to right and stays the same between visits.
+ * The map has two arrangements of the same entries:
  *
- * d3-force seeds its own random source, so the layout is deterministic: the
- * server and the browser compute identical positions, which means the map
- * renders before JavaScript loads and never jumps on hydration.
+ * - **Constellation** (the default): a free, non-hierarchical arrangement in
+ *   which entries settle near the ones they are connected to, whatever their
+ *   type. This is the platform's rhizomatic map: no type sits above or
+ *   before another, and clusters emerge from the connections themselves.
+ * - **Columns**: the same entries sorted by type into four columns
+ *   (partners, people, projects, methods), for reading the network's
+ *   structure at a glance.
+ *
+ * Both are computed with d3-force, which seeds its own random source, so
+ * the result is deterministic: the server and the browser compute identical
+ * positions, the map renders before JavaScript loads, and it never jumps on
+ * hydration or between visits.
  */
-import { forceCollide, forceLink, forceManyBody, forceSimulation, forceX, forceY } from 'd3-force';
+import { forceLink, forceManyBody, forceSimulation, forceX, forceY, forceCollide } from 'd3-force';
 import type { SimulationLinkDatum, SimulationNodeDatum } from 'd3-force';
 import type { GraphData, NodeType } from './types';
 
-export const LAYOUT_WIDTH = 1200;
+export const LAYOUT_WIDTH = 2000;
+/** The columns use the middle of the frame; the constellation spreads across all of it. */
+const COLUMNS_SPAN = 1600;
 export const COLUMN_ORDER: NodeType[] = ['Partners', 'People', 'Projects', 'Methods'];
-/** Column centres as fractions of the map width. */
-export const COLUMN_X = [0.05, 0.31, 0.57, 0.83];
+/** Column positions as fractions of the map width. */
+export const COLUMN_X = [0.01, 0.27, 0.53, 0.78];
+/** Every entry is drawn at the same size: none is more important than another. */
+export const NODE_RADIUS = 7;
+/** Labels longer than this are shortened in the columns arrangement (the full name is on hover, focus and in the details). */
+export const LABEL_MAX = 34;
+
+/**
+ * Constellation labels follow the original platform's look: the name itself,
+ * bold and in its type's colour, centred under the entry's mark and wrapped
+ * onto up to three lines.
+ */
+export const STAR_FONT = 22;
+export const STAR_LINE = 27;
+export const STAR_CHAR = 11.6;
+const STAR_WRAP = 18;
+const STAR_MAX_LINES = 3;
+
+/** Split a name into up to three centred lines for the constellation. */
+export function wrapLabel(name: string): string[] {
+  const words = name.trim().split(/\s+/);
+  const lines: string[] = [];
+  let line = '';
+  for (const w of words) {
+    const next = line ? `${line} ${w}` : w;
+    if (next.length > STAR_WRAP && line) {
+      lines.push(line);
+      line = w;
+    } else {
+      line = next;
+    }
+  }
+  if (line) lines.push(line);
+  if (lines.length > STAR_MAX_LINES) {
+    const kept = lines.slice(0, STAR_MAX_LINES);
+    kept[STAR_MAX_LINES - 1] = `${kept[STAR_MAX_LINES - 1].replace(/[\s,:;/–-]+$/, '')}…`;
+    return kept;
+  }
+  return lines;
+}
+
+/** The extent of a constellation entry (mark plus wrapped label) relative to its point. */
+export function starBox(name: string): { left: number; right: number; top: number; bottom: number } {
+  const lines = wrapLabel(name);
+  // The name is the node, centred on its point; a small type mark sits before the first line.
+  const w = Math.max(...lines.map((l, i) => l.length * STAR_CHAR + (i === 0 ? 20 : 0))) + 8;
+  const h = lines.length * STAR_LINE + 6;
+  return { left: -w / 2, right: w / 2, top: -h / 2, bottom: h / 2 };
+}
+
+export type Arrangement = 'constellation' | 'columns';
+export const ARRANGEMENTS: Arrangement[] = ['constellation', 'columns'];
 
 export interface Position {
   x: number;
@@ -28,20 +85,182 @@ export interface Position {
 export interface Layout {
   width: number;
   height: number;
-  positions: Record<string, Position>;
+  /** Column headings, used by the columns arrangement. */
   columns: { type: NodeType; x: number }[];
+  /** Where the column headings sit, and the area the columns arrangement occupies (to zoom to it). */
+  columnsTop: number;
+  columnsBounds: { x0: number; y0: number; x1: number; y1: number };
+  positions: Record<Arrangement, Record<string, Position>>;
 }
 
 interface SimNode extends SimulationNodeDatum {
   id: string;
   type: NodeType;
+  /** Extent of the mark and label around the point, used to keep labels apart. */
+  box: { left: number; right: number; top: number; bottom: number };
+}
+
+export function shortLabel(name: string): string {
+  const clean = name.trim();
+  if (clean.length <= LABEL_MAX) return clean;
+  const cut = clean.slice(0, LABEL_MAX - 1);
+  const space = cut.lastIndexOf(' ');
+  return `${(space > 20 ? cut.slice(0, space) : cut).replace(/[\s,:;/–-]+$/, '')}…`;
 }
 
 export function computeLayout(data: GraphData): Layout {
   const perColumn = Math.max(1, ...COLUMN_ORDER.map((t) => data.nodes.filter((n) => n.type === t).length));
-  const height = Math.max(600, perColumn * 38 + 140);
-  const columnX = (t: NodeType) => COLUMN_X[COLUMN_ORDER.indexOf(t)] * LAYOUT_WIDTH;
+  // Tall enough for the columns, and for the constellation's larger labels.
+  const constellation = computeConstellation(
+    data,
+    LAYOUT_WIDTH,
+    Math.max(perColumn * 38 + 140, Math.round(Math.sqrt(data.nodes.length) * 175)),
+  );
+  const height = constellation.height;
+  // The columns keep their own natural height, centred in the shared frame.
+  const colHeight = Math.min(height, perColumn * 38 + 140);
+  const colTop = Math.round((height - colHeight) / 2);
+  return {
+    width: LAYOUT_WIDTH,
+    height,
+    columns: COLUMN_ORDER.map((type) => ({ type, x: columnX(type) })),
+    columnsTop: colTop + 46,
+    columnsBounds: { x0: (LAYOUT_WIDTH - COLUMNS_SPAN) / 2, y0: colTop, x1: (LAYOUT_WIDTH + COLUMNS_SPAN) / 2, y1: colTop + colHeight },
+    positions: {
+      constellation: constellation.positions,
+      columns: Object.fromEntries(
+        Object.entries(computeColumns(data, colHeight)).map(([id, p]) => [id, { x: p.x, y: p.y + colTop }]),
+      ),
+    },
+  };
+}
 
+function columnX(t: NodeType): number {
+  return (LAYOUT_WIDTH - COLUMNS_SPAN) / 2 + COLUMN_X[COLUMN_ORDER.indexOf(t)] * COLUMNS_SPAN + NODE_RADIUS + 12;
+}
+
+/**
+ * Free arrangement. Connected entries attract, all entries repel, and a
+ * collision force treats each entry and its label as a box, so labels don't
+ * sit on top of each other. Entries are kept inside the frame (with room for
+ * their label on the right), so both arrangements share one frame and the
+ * switch between them is a pure movement of the same entries.
+ */
+function computeConstellation(data: GraphData, width: number, height: number): { positions: Record<string, Position>; height: number } {
+  const R = NODE_RADIUS;
+  const margin = 16;
+  // Start from a sunflower spiral in name order: deterministic and even.
+  const sorted = [...data.nodes].sort((a, b) => a.name.localeCompare(b.name, 'en', { sensitivity: 'base' }));
+  const golden = Math.PI * (3 - Math.sqrt(5));
+  const nodes: SimNode[] = sorted.map((n, i) => {
+    const r = 30 * Math.sqrt(i + 0.5);
+    return {
+      id: n.id,
+      type: n.type,
+      box: starBox(n.name),
+      x: width / 2 + r * Math.cos(i * golden) * 1.4,
+      y: height / 2 + r * Math.sin(i * golden),
+    };
+  });
+  const links: SimulationLinkDatum<SimNode>[] = data.links.map((l) => ({ source: l.source, target: l.target }));
+
+  const PAD_X = 56;
+  const PAD_Y = 40;
+  const boxCollide = (strength = 0.7) => {
+    for (let i = 0; i < nodes.length; i++) {
+      for (let j = i + 1; j < nodes.length; j++) {
+        const a = nodes[i];
+        const b = nodes[j];
+        const acx = a.x! + (a.box.left + a.box.right) / 2;
+        const acy = a.y! + (a.box.top + a.box.bottom) / 2;
+        const bcx = b.x! + (b.box.left + b.box.right) / 2;
+        const bcy = b.y! + (b.box.top + b.box.bottom) / 2;
+        const dx = bcx - acx;
+        const dy = bcy - acy;
+        const ox = (a.box.right - a.box.left + b.box.right - b.box.left) / 2 + PAD_X - Math.abs(dx);
+        const oy = (a.box.bottom - a.box.top + b.box.bottom - b.box.top) / 2 + PAD_Y - Math.abs(dy);
+        if (ox <= 0 || oy <= 0) continue;
+        // Separate along the axis that needs the smaller move.
+        if (oy < ox) {
+          const s = (oy / 2) * strength * (dy === 0 ? (i % 2 ? 1 : -1) : Math.sign(dy));
+          a.y! -= s;
+          b.y! += s;
+        } else {
+          const s = (ox / 2) * strength * (dx === 0 ? (i % 2 ? 1 : -1) : Math.sign(dx));
+          a.x! -= s;
+          b.x! += s;
+        }
+      }
+    }
+  };
+
+  const clamp = () => {
+    for (const n of nodes) {
+      n.x = Math.max(margin - n.box.left, Math.min(width - margin - n.box.right, n.x ?? 0));
+      n.y = Math.max(margin - n.box.top, Math.min(height - margin - n.box.bottom, n.y ?? 0));
+    }
+  };
+
+  const sim = forceSimulation(nodes)
+    .force(
+      'link',
+      forceLink<SimNode, SimulationLinkDatum<SimNode>>(links)
+        .id((d) => d.id)
+        .distance(210)
+        .strength(0.22),
+    )
+    .force('charge', forceManyBody<SimNode>().strength(-900).distanceMax(800))
+    .force('x', forceX<SimNode>(width / 2).strength(0.012))
+    .force('y', forceY<SimNode>(height / 2).strength(0.07))
+    .force('collide', forceCollide<SimNode>(R + 60))
+    .stop();
+
+  for (let i = 0; i < 500; i++) {
+    sim.tick();
+    if (i > 120) boxCollide();
+    clamp();
+  }
+  // Then separate any remaining overlaps fully, with the forces off.
+  for (let i = 0; i < 200; i++) {
+    boxCollide(0.4);
+    clamp();
+  }
+  // Finally, a sweep from top to bottom that moves any entry still touching
+  // one above it straight down. This guarantees no label overlaps another;
+  // the frame grows to fit if needed.
+  const byTop = [...nodes].sort((a, b) => a.y! + a.box.top - (b.y! + b.box.top));
+  for (let i = 0; i < byTop.length; i++) {
+    const n = byTop[i];
+    for (let pass = 0; pass < 2; pass++) {
+      for (let j = 0; j < i; j++) {
+        const m = byTop[j];
+        const xOverlap = n.x! + n.box.left < m.x! + m.box.right + 2 && m.x! + m.box.left < n.x! + n.box.right + 2;
+        const yOverlap = n.y! + n.box.top < m.y! + m.box.bottom + 2 && m.y! + m.box.top < n.y! + n.box.bottom + 2;
+        if (xOverlap && yOverlap) n.y = m.y! + m.box.bottom + 2 - n.box.top;
+      }
+    }
+  }
+
+  // Centre the drawing (marks and labels) in the frame, growing it if the sweep needed more room.
+  const left = Math.min(...nodes.map((n) => n.x! + n.box.left));
+  const right = Math.max(...nodes.map((n) => n.x! + n.box.right));
+  const upper = Math.min(...nodes.map((n) => n.y! + n.box.top));
+  const lower = Math.max(...nodes.map((n) => n.y! + n.box.bottom));
+  const finalHeight = Math.max(height, Math.ceil(lower - upper + margin * 2));
+  const dx = (width - (left + right)) / 2;
+  const dy = (finalHeight - (upper + lower)) / 2;
+
+  const positions: Record<string, Position> = {};
+  for (const n of nodes) positions[n.id] = { x: Math.round(n.x! + dx), y: Math.round(n.y! + dy) };
+  return { positions, height: finalHeight };
+}
+
+/**
+ * Sorted arrangement. Each type is pulled into its own column and the force
+ * simulation only arranges entries vertically within it, ordering them to
+ * reduce crossing lines.
+ */
+function computeColumns(data: GraphData, height: number): Record<string, Position> {
   // Initial positions: in column, spread vertically in name order, so the
   // simulation starts from something sensible and settles quickly.
   const nodes: SimNode[] = COLUMN_ORDER.flatMap((t) => {
@@ -51,6 +270,7 @@ export function computeLayout(data: GraphData): Layout {
     return list.map((n, i) => ({
       id: n.id,
       type: n.type,
+      box: { left: 0, right: 0, top: 0, bottom: 0 },
       x: columnX(t),
       y: 100 + ((i + 0.5) / list.length) * (height - 200),
     }));
@@ -72,12 +292,12 @@ export function computeLayout(data: GraphData): Layout {
 
   for (let i = 0; i < 400; i++) sim.tick();
 
-  // Snap x exactly to the column (the x force gets close, not exact), then
-  // within each column keep the simulated order but enforce a minimum gap so
-  // labels never overlap, and fit the result to the canvas.
+  // Snap x exactly to the column, then within each column keep the
+  // simulated order but enforce a minimum gap so labels never overlap, and
+  // fit the result to the frame.
   const MIN_GAP = 30;
   const top = 84;
-  const bottom = 48;
+  const bottom = 40;
   const positions: Record<string, Position> = {};
   const columnYs = new Map<NodeType, { id: string; y: number }[]>();
   for (const t of COLUMN_ORDER) {
@@ -86,14 +306,12 @@ export function computeLayout(data: GraphData): Layout {
       .map((n) => ({ id: n.id, y: n.y ?? 0 }))
       .sort((a, b) => a.y - b.y);
     if (!list.length) continue;
-    // Normalise to the usable height, then push apart where too close.
     const minY = list[0].y;
     const maxY = list[list.length - 1].y;
     const span = Math.max(1, maxY - minY);
     const usable = height - top - bottom;
     for (const item of list) item.y = top + ((item.y - minY) / span) * usable;
     for (let i = 1; i < list.length; i++) list[i].y = Math.max(list[i].y, list[i - 1].y + MIN_GAP);
-    // If pushing ran past the bottom, pull back up from the end.
     const limit = height - bottom;
     if (list[list.length - 1].y > limit) {
       list[list.length - 1].y = limit;
@@ -105,13 +323,17 @@ export function computeLayout(data: GraphData): Layout {
   for (const [t, list] of columnYs) {
     for (const item of list) positions[item.id] = { x: Math.round(columnX(t)), y: Math.round(item.y - shift) };
   }
+  return positions;
+}
 
-  return {
-    width: LAYOUT_WIDTH,
-    height,
-    positions,
-    columns: COLUMN_ORDER.map((type) => ({ type, x: columnX(type) })),
-  };
+/** Linear interpolation between two positions. */
+export function lerpPosition(a: Position, b: Position, t: number): Position {
+  return { x: a.x + (b.x - a.x) * t, y: a.y + (b.y - a.y) * t };
+}
+
+/** Smooth in-out easing for the switch between arrangements. */
+export function easeInOut(t: number): number {
+  return t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2;
 }
 
 /**

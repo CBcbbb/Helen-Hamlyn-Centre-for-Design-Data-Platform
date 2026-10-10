@@ -42,7 +42,7 @@
      these darker values are used whenever the colour carries text (≥4.5:1
      on paper, surface and the type's own tint). People's base already passes. */
   --color-people-text: var(--color-people);
-  --color-partners-text: var(--color-partners-hover);
+  --color-partners-text: var(--color-partners); /* the brand colour already passes 4.5:1 (4.53:1) */
   --color-projects-text: #a8470f;
   --color-methods-text: var(--color-methods-hover);
   --color-accent-text: var(--color-accent-hover);
@@ -314,12 +314,14 @@ kbd {
 
 /* ---------- Network map ---------- */
 .graph-edge {
-  stroke: var(--color-rule-strong);
-  stroke-width: 1;
+  stroke: var(--color-rule);
+  stroke-width: 1.1;
+  stroke-linecap: round;
   transition: stroke 160ms var(--ease-out), opacity 160ms var(--ease-out);
 }
 .graph-edge[data-active='true'] {
-  stroke: var(--color-ink-muted);
+  /* As in the original: the same grey edge colour, just fully drawn. */
+  stroke: var(--color-edge-stroke);
   stroke-width: 1.5;
 }
 .graph-node {
@@ -328,15 +330,34 @@ kbd {
 }
 .graph-node text {
   font-family: var(--font-display);
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 520;
   fill: var(--color-ink);
+  transition: opacity 120ms linear;
   paint-order: stroke;
   stroke: var(--color-paper);
   stroke-width: 4px;
   stroke-linejoin: round;
   user-select: none;
   pointer-events: none;
+}
+/* The type shape before a constellation name: a little smaller than the
+   name and lifted to sit on its x-height. */
+.graph-node tspan.star-glyph {
+  font-size: 0.72em;
+  dominant-baseline: auto;
+  baseline-shift: 0.12em;
+}
+/* Constellation labels: the name in its type's colour, bold and centred, as in the original platform. */
+.graph-node text.star-label {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-anchor: middle;
+  /* A hairline halo only: enough to keep a crossing line from cutting
+     through a letter, without thickening the type. */
+  stroke-width: 2px;
+  stroke: var(--color-paper);
 }
 .graph-node .focus-ring {
   fill: none;
@@ -348,15 +369,108 @@ kbd {
 .graph-node[data-selected='true'] .focus-ring {
   opacity: 1;
 }
-.graph-node[data-selected='true'] text,
-.graph-node[data-match='true'] text {
+.graph-node[data-selected='true'] text.column-label,
+.graph-node[data-match='true'] text.column-label {
   font-weight: 680;
+}
+.graph-node[data-selected='true'] text.star-label,
+.graph-node[data-match='true'] text.star-label {
+  font-weight: 820;
 }
 [data-dimmed='true'] {
   opacity: 0.16;
 }
 .graph-node[data-dimmed='true'] {
   opacity: 0.32;
+}
+/* The path you have walked stays drawn, even while another entry is emphasised. */
+.graph-edge[data-path='true'] {
+  stroke: var(--color-edge-stroke);
+  stroke-width: 2.5;
+  opacity: 1;
+}
+.graph-node[data-path='true'] .focus-ring {
+  opacity: 1;
+  stroke: var(--color-ink-muted);
+  stroke-dasharray: 2 3;
+}
+.graph-node[data-path='true'] {
+  opacity: 1;
+}
+/* Zoomed far out, only emphasised entries keep a label (semantic zoom). */
+.graph-node text[data-hidden='true'] {
+  display: none;
+}
+/* The guide's first step: a slow pulse around one entry. */
+.guide-pulse {
+  fill: none;
+  stroke: var(--color-accent);
+  stroke-width: 2;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: guide-pulse 1.8s var(--ease-out) infinite;
+}
+@keyframes guide-pulse {
+  0% {
+    transform: scale(0.7);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.9);
+    opacity: 0;
+  }
+}
+
+/* ---------- Guide cards ---------- */
+.guide-card {
+  position: relative;
+}
+.guide-card[data-caret]::before {
+  content: '';
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background: var(--color-ink);
+  transform: rotate(45deg);
+}
+.guide-card[data-caret='top']::before {
+  top: -5px;
+  left: 22px;
+}
+.guide-card[data-caret='bottom']::before {
+  bottom: -5px;
+  left: 22px;
+}
+.guide-card[data-caret='top-right']::before {
+  top: -5px;
+  right: 28px;
+}
+.guide-btn {
+  display: inline-flex;
+  min-height: 2.5rem;
+  align-items: center;
+  border-radius: 999px;
+  padding: 0 0.9rem;
+  font-size: 0.9375rem;
+  font-weight: 560;
+  color: var(--color-paper);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-paper) 55%, transparent);
+  transition: background-color 160ms var(--ease-out);
+}
+.guide-btn:hover {
+  background: color-mix(in srgb, var(--color-paper) 12%, transparent);
+}
+.guide-btn-primary {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  box-shadow: none;
+}
+.guide-btn-primary:hover {
+  background: var(--color-surface);
+}
+.guide-card :focus-visible {
+  outline-color: var(--color-paper);
+  box-shadow: 0 0 0 4px var(--color-accent);
 }
 
 }
@@ -396,6 +510,9 @@ kbd {
 .anim-sheet {
   animation: sheet-in 240ms var(--ease-out);
 }
+.anim-guide {
+  animation: fade-in 260ms var(--ease-out);
+}
 
 dialog::backdrop {
   background: var(--color-scrim);
@@ -410,6 +527,12 @@ dialog::backdrop {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+  /* No pulse: a steady ring marks the guide's entry instead. */
+  .guide-pulse {
+    animation: none !important;
+    transform: scale(1.25);
+    opacity: 1;
   }
 }
 
@@ -428,8 +551,12 @@ dialog::backdrop {
   .type-mark {
     forced-color-adjust: none;
   }
-  .graph-node .focus-ring {
+  .graph-node .focus-ring,
+  .guide-pulse {
     stroke: Highlight;
+  }
+  .guide-card {
+    border: 2px solid CanvasText;
   }
 }
 

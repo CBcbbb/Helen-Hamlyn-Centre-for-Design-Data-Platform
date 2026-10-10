@@ -10,7 +10,7 @@ export default function NotFound() {
       <ul className="mt-8 flex flex-wrap gap-3">
         <li>
           <Link href="/" className="btn btn-primary">
-            Go to the home page
+            Go to the network map
           </Link>
         </li>
         <li>
@@ -19,7 +19,7 @@ export default function NotFound() {
           </Link>
         </li>
         <li>
-          <Link href="/explore/table" className="btn btn-secondary">
+          <Link href="/table" className="btn btn-secondary">
             See every entry in a table
           </Link>
         </li>

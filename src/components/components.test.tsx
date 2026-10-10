@@ -8,6 +8,7 @@ import { EntityPage } from './EntityPage';
 import { NetworkExplorer } from './explore/NetworkExplorer';
 import { KeyboardHelp } from './explore/KeyboardHelp';
 import { TypeMark } from './TypeMark';
+import { computeLayout } from '@/lib/layout';
 
 type Nav = { pathname: string; push: ReturnType<typeof vi.fn> };
 const nav = (globalThis as unknown as { __nav: Nav }).__nav;
@@ -33,7 +34,9 @@ function node(id: string): GraphNode {
 }
 
 beforeEach(() => {
-  nav.pathname = '/explore';
+  nav.pathname = '/';
+  window.localStorage.clear();
+  window.history.replaceState(null, '', '/');
   nav.push.mockReset();
   setWide(true);
 });
@@ -192,43 +195,62 @@ describe('NetworkExplorer', () => {
     expect(entry).toHaveFocus();
   });
 
-  it('narrow screens: details open as a modal dialog', async () => {
+  it('narrow screens: details open as a non-modal sheet that can be expanded', async () => {
     setWide(false);
     const user = userEvent.setup();
-    nav.pathname = '/explore/table';
+    nav.pathname = '/table';
     render(<NetworkExplorer data={graph} />);
     await user.click(screen.getByRole('button', { name: 'PACES' }));
-    const dialog = screen.getByRole('dialog');
-    expect(dialog).toHaveAttribute('aria-modal', 'true');
-    expect(within(dialog).getByRole('heading', { level: 2, name: 'PACES' })).toBeInTheDocument();
-    expect(screen.queryByRole('complementary')).not.toBeInTheDocument();
+    const sheet = screen.getByRole('complementary', { name: 'PACES' });
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    expect(within(sheet).getByRole('heading', { level: 2, name: 'PACES' })).toHaveFocus();
+    const expand = within(sheet).getByRole('button', { name: 'Expand' });
+    expect(expand).toHaveAttribute('aria-expanded', 'false');
+    await user.click(expand);
+    expect(within(sheet).getByRole('button', { name: 'Show the map' })).toHaveAttribute('aria-expanded', 'true');
   });
 
-  it('arrow keys move focus between map entries', async () => {
+  it('arrow keys move focus to the nearest entry in that direction, in either arrangement', async () => {
     const user = userEvent.setup();
     const { container } = render(<NetworkExplorer data={graph} />);
+    const layout = computeLayout(graph);
+    const x = (el: Element | null) => (el ? layout.positions.constellation[el.getAttribute('data-id')!].x : NaN);
     const first = container.querySelector<SVGGElement>('.graph-node[tabindex="0"]')!;
     first.focus();
     await user.keyboard('{ArrowRight}');
     expect(document.activeElement).not.toBe(first);
-    expect(document.activeElement?.getAttribute('aria-label')).toMatch(/person/);
+    expect(x(document.activeElement)).toBeGreaterThan(x(first));
     expect(container.querySelectorAll('.graph-node[tabindex="0"]')).toHaveLength(1);
+
+    // By type, → from a person goes to the projects column.
+    await user.click(screen.getByRole('radio', { name: 'By type' }));
+    const person = container.querySelector<SVGGElement>('[data-id="P001"]')!;
+    person.focus();
+    await user.keyboard('{ArrowRight}');
+    expect(document.activeElement?.getAttribute('aria-label')).toMatch(/project/);
   });
 
-  it('table view: one table per type with captions and row headers', () => {
-    nav.pathname = '/explore/table';
+  it('table view: one table of every entry, with row headers, sortable by type or name', async () => {
+    const user = userEvent.setup();
+    nav.pathname = '/table';
     render(<NetworkExplorer data={graph} />);
-    const tables = screen.getAllByRole('table');
-    expect(tables).toHaveLength(4);
-    expect(within(tables[0]).getAllByRole('rowheader')).toHaveLength(17);
-    expect(tables[0]).toHaveAccessibleName(/Projects/);
+    const table = screen.getByRole('table');
+    expect(screen.getAllByRole('table')).toHaveLength(1);
+    expect(within(table).getAllByRole('rowheader')).toHaveLength(48);
+    expect(within(table).getByRole('columnheader', { name: /Type/ })).toHaveAttribute('aria-sort', 'ascending');
+    await user.click(within(table).getByRole('button', { name: /Name/ }));
+    expect(within(table).getByRole('columnheader', { name: /Name/ })).toHaveAttribute('aria-sort', 'ascending');
+    const first = within(table).getAllByRole('rowheader')[0].textContent!;
+    const second = within(table).getAllByRole('rowheader')[1].textContent!;
+    expect(first.localeCompare(second, 'en', { sensitivity: 'base' })).toBeLessThanOrEqual(0);
+    expect(screen.getByRole('status')).toHaveTextContent('Sorted by name.');
   });
 
   it('Ctrl/Cmd+E switches view and announces it', async () => {
     const user = userEvent.setup();
     render(<NetworkExplorer data={graph} />);
     await user.keyboard('{Control>}e{/Control}');
-    expect(nav.push).toHaveBeenCalledWith('/explore/table', { scroll: false });
+    expect(nav.push).toHaveBeenCalledWith('/table', { scroll: false });
     expect(screen.getByRole('status')).toHaveTextContent('Showing the table view');
   });
 
@@ -243,5 +265,79 @@ describe('NetworkExplorer', () => {
     screen.getByRole('searchbox').blur();
     await user.keyboard('?');
     expect(screen.getByRole('dialog', { name: 'Keyboard shortcuts' })).toBeInTheDocument();
+  });
+
+  it('arrangement: two labelled radio buttons; switching is announced', async () => {
+    const user = userEvent.setup();
+    render(<NetworkExplorer data={graph} />);
+    const group = screen.getByRole('group', { name: 'Arrange the map' });
+    const constellation = within(group).getByRole('radio', { name: 'Constellation' });
+    const byType = within(group).getByRole('radio', { name: 'By type' });
+    expect(constellation).toBeChecked();
+    await user.click(byType);
+    expect(byType).toBeChecked();
+    expect(screen.getByRole('status')).toHaveTextContent('Arranged by type');
+  });
+
+  it('path: opened entries form a path, and selecting an earlier step goes back to it', async () => {
+    const user = userEvent.setup();
+    window.localStorage.setItem('hhcd-guide', 'done');
+    const { container } = render(<NetworkExplorer data={graph} />);
+    await user.click(container.querySelector<SVGGElement>('[data-id="PR004"]')!);
+    const panel = screen.getByRole('complementary', { name: 'Design Bugs Out' });
+    await user.click(within(panel).getByRole('button', { name: 'Hua Dong' }));
+    const trail = screen.getByRole('navigation', { name: 'Your path' });
+    expect(within(trail).getByText('Hua Dong').closest('[aria-current]')).toHaveAttribute('aria-current', 'step');
+    await user.click(within(trail).getByRole('button', { name: /Design Bugs Out, step 1, go back/ }));
+    expect(screen.getByRole('complementary', { name: 'Design Bugs Out' })).toBeInTheDocument();
+    expect(screen.queryByRole('navigation', { name: 'Your path' })).not.toBeInTheDocument();
+  });
+
+  describe('guide', () => {
+    it('on a first visit, points at one project and moves on as you follow it', async () => {
+      const user = userEvent.setup();
+      render(<NetworkExplorer data={graph} />);
+      const first = await screen.findByRole('region', { name: 'Design Bugs Out' });
+      expect(first).toHaveTextContent('1 of 4');
+      // The highlighted project is the map's tab stop.
+      expect(document.querySelector('.graph-node[tabindex="0"]')).toHaveAttribute('data-id', 'PR004');
+
+      await user.click(within(first).getByRole('button', { name: 'Open Design Bugs Out' }));
+      const panel = screen.getByRole('complementary', { name: 'Design Bugs Out' });
+      const second = within(panel).getByRole('region', { name: 'Follow a connection' });
+      expect(second).toHaveTextContent('2 of 4');
+
+      await user.click(within(panel).getByRole('button', { name: 'Hua Dong' }));
+      const third = screen.getByRole('region', { name: 'Your path' });
+      expect(third).toHaveTextContent('3 of 4');
+
+      await user.click(within(third).getByRole('button', { name: 'Next' }));
+      const fourth = screen.getByRole('region', { name: 'Two ways to see it' });
+      await user.click(within(fourth).getByRole('button', { name: 'Arrange by type' }));
+      expect(screen.getByRole('radio', { name: 'By type' })).toBeChecked();
+      expect(screen.queryByRole('region', { name: 'Two ways to see it' })).not.toBeInTheDocument();
+      expect(window.localStorage.getItem('hhcd-guide')).toBe('done');
+    });
+
+    it('can be skipped, is not shown again, and can be restarted', async () => {
+      const user = userEvent.setup();
+      const { unmount } = render(<NetworkExplorer data={graph} />);
+      await user.click(await screen.findByRole('button', { name: 'Skip the guide' }));
+      expect(screen.queryByRole('region', { name: 'Design Bugs Out' })).not.toBeInTheDocument();
+      unmount();
+      render(<NetworkExplorer data={graph} />);
+      await act(() => new Promise((r) => setTimeout(r, 10)));
+      expect(screen.queryByRole('region', { name: 'Design Bugs Out' })).not.toBeInTheDocument();
+      await user.click(screen.getByRole('button', { name: 'Show the guide' }));
+      expect(screen.getByRole('region', { name: 'Design Bugs Out' })).toBeInTheDocument();
+      expect(screen.getByRole('status')).toHaveTextContent('Guide started');
+    });
+
+    it('is not shown when arriving to see a particular entry', async () => {
+      window.history.replaceState(null, '', '/?focus=PR013');
+      render(<NetworkExplorer data={graph} />);
+      expect(await screen.findByRole('complementary', { name: 'Heart n Soul @ The Hub' })).toBeInTheDocument();
+      expect(screen.queryByText('1 of 4')).not.toBeInTheDocument();
+    });
   });
 });

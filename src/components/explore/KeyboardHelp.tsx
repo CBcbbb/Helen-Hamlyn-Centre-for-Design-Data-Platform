@@ -13,6 +13,7 @@ export function KeyboardHelp({ open, onClose }: { open: boolean; onClose: () => 
     [`${mod} E`, 'Switch between map and table'],
     ['Tab', 'Move into the map, then out again'],
     ['Arrow keys', 'Move to the nearest entry in that direction (in the map)'],
+    ['Home or End', 'Move to the first or last entry (in the map)'],
     ['Enter or Space', 'Open the details of the focused entry'],
     [`${mod} ← →`, 'Make the details panel wider or narrower'],
     ['Escape', 'Close the details panel or this dialog'],

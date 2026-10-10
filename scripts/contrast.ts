@@ -69,7 +69,7 @@ const pairs: [fg: string, bg: string, kind: Kind, where: string][] = [
   ['--color-projects-text', '--color-paper', 'text', 'Projects label'],
   ['--color-methods-text', '--color-paper', 'text', 'Methods label and links'],
   ['--color-people-text', '--color-people-tint', 'text', 'People text on its tint'],
-  ['--color-partners-text', '--color-partners-tint', 'text', 'Partners text on its tint'],
+  ['--color-partners-hover', '--color-partners-tint', 'text', 'Admin error text on the partners tint'],
   ['--color-projects-text', '--color-projects-tint', 'text', 'Projects text on its tint'],
   ['--color-methods-text', '--color-methods-tint', 'text', 'Methods text on its tint'],
   // Brand swatches as marks (shapes in lists and in the map; filter checkboxes)

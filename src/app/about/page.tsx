@@ -50,15 +50,20 @@ export default function AboutPage() {
           <Section id="about" title="About this website">
             <p>
               Welcome to the Helen Hamlyn Centre for Design Data Platform: a rhizomatic map of projects, methods,
-              people and organisations. It is a publicly accessible resource for artists, researchers, the public and
-              funders, where you can discover, follow and adapt methods for your own contexts and creative practice.
+              people and organisations.
             </p>
             <p>
-              The map uses a rhizomatic method, inspired by mycelium and constellations of stars, to show emerging
-              knowledge from the Helen Hamlyn Centre for Design as an interconnected ecosystem. People, partners,
-              projects and methods are treated as equals: each has its own page, and any of them can be where you
-              start.
+              We use a rhizomatic mapping method, inspired by mycelium and constellations of stars, to showcase the
+              emerging knowledge from the Helen Hamlyn Centre for Design. There is no centre and no hierarchy: people,
+              partners, projects and methods are equals, and any of them can be where you start. Explore the entries
+              across this constellation to learn about the organisations and methods we have worked with, and the
+              projects we have worked on.
             </p>
+            <p>
+              The platform is a publicly accessible resource for artists, researchers, the public and funders, to
+              discover, follow and adapt methods for their own contexts and creative practice.
+            </p>
+            <h3 className="heading mt-8 text-lg">About the Helen Hamlyn Centre for Design</h3>
             <p>
               The Helen Hamlyn Centre for Design is a global leader in inclusive design and works with government,
               business, academia and the third sector to conduct research and knowledge exchange projects.{' '}
@@ -71,15 +76,35 @@ export default function AboutPage() {
 
           <Section id="how-to-use" title="How to use it">
             <p>
-              <strong className="font-sans font-semibold">Start from one example.</strong> The{' '}
+              <strong className="font-sans font-semibold">The map.</strong> The{' '}
               <Link href="/" className="link">
-                home page
+                map
               </Link>{' '}
-              introduces one project, the people and methods behind it, and where they lead. From there, every name is
-              a link to its own page.
+              shows every entry and every connection. Each entry sits near the ones it is connected to. Hover over or
+              focus an entry to see its connections, and select it to open its details.
             </p>
             <p>
-              <strong className="font-sans font-semibold">Browse by type.</strong> Lists of all{' '}
+              <strong className="font-sans font-semibold">Follow connections.</strong> In the details, every
+              connection can be selected in turn. The entries you open form a path at the top of the details, so you
+              can always step back. On a first visit, a short guide shows how; you can{' '}
+              <Link href="/?guide" className="link">
+                show the guide again
+              </Link>{' '}
+              at any time.
+            </p>
+            <p>
+              <strong className="font-sans font-semibold">Two arrangements.</strong> Constellation places entries by
+              their connections. By type sorts the same entries into columns of partners, people, projects and
+              methods. Switch between them with the control at the top of the map.
+            </p>
+            <p>
+              <strong className="font-sans font-semibold">Search, filter or read it as a table.</strong> Search and the
+              type filters narrow the map down. The{' '}
+              <Link href="/table" className="link">
+                table view
+              </Link>{' '}
+              holds the same data as lists, which many people find easier to read. Every entry also has its own page,
+              and the{' '}
               <Link href="/projects" className="link">
                 projects
               </Link>
@@ -95,19 +120,7 @@ export default function AboutPage() {
               <Link href="/partners" className="link">
                 partners
               </Link>{' '}
-              give a short summary of each.
-            </p>
-            <p>
-              <strong className="font-sans font-semibold">See the whole network.</strong> The{' '}
-              <Link href="/explore" className="link">
-                network map
-              </Link>{' '}
-              shows every entry and connection. Hover over or focus an entry to see what it connects to, and select it
-              for details. Search and the type filters narrow the map down. The{' '}
-              <Link href="/explore/table" className="link">
-                table view
-              </Link>{' '}
-              holds the same data as lists, which many people find easier to read.
+              lists give a short summary of each.
             </p>
           </Section>
 
@@ -125,8 +138,9 @@ export default function AboutPage() {
                 the content.
               </li>
               <li>
-                In the network map, the map is one stop in the tab order. Inside it, the <kbd>arrow keys</kbd> move to
-                the nearest entry in that direction, and <kbd>Enter</kbd> or <kbd>Space</kbd> opens its details.
+                The map is one stop in the tab order. Inside it, the <kbd>arrow keys</kbd> move to the nearest entry in
+                that direction, in either arrangement, and <kbd>Enter</kbd> or <kbd>Space</kbd> opens its details.
+                From the details, each connection is a button, so you can follow connections from entry to entry.
               </li>
               <li>
                 <kbd>Escape</kbd> closes the details panel and dialogs, and focus goes back to where you were.
@@ -141,16 +155,22 @@ export default function AboutPage() {
             </ul>
             <h3 className="heading mt-8 text-lg">Screen readers</h3>
             <p>
-              Pages use landmarks and headings in a logical order. Search results and filter changes are announced. The
-              table view is the recommended way to explore the whole network with a screen reader: each entity type is a
-              table with a caption and row headers.
+              Pages use landmarks and headings in a logical order. Each entry on the map is announced with its type and
+              number of connections. Search results, filter changes and switching arrangement are announced. The guide
+              never moves your focus: its cards sit just before what they point at, and can be skipped. The table view
+              is the recommended way to explore the whole network with a screen reader: each entity type is a table with
+              a caption and row headers.
             </p>
             <h3 className="heading mt-8 text-lg">Seeing and reading</h3>
             <ul className="list-disc space-y-1.5 pl-5 marker:text-ink-muted">
               <li>Text colours meet WCAG AA contrast against their backgrounds.</li>
               <li>Each entity type has a shape as well as a colour, so type never depends on colour alone.</li>
-              <li>Text resizes with your browser settings, and pages reflow on narrow screens.</li>
-              <li>Animation is switched off if your system asks for reduced motion.</li>
+              <li>Every entry on the map is drawn at the same size: none is shown as more important than another.</li>
+              <li>Text resizes with your browser settings, and pages reflow on screens down to 320 pixels wide.</li>
+              <li>
+                Animation (the guide&rsquo;s pulse and the move between arrangements) is switched off if your system
+                asks for reduced motion.
+              </li>
               <li>Every page works without JavaScript, apart from search, filters and the details panel.</li>
             </ul>
           </Section>

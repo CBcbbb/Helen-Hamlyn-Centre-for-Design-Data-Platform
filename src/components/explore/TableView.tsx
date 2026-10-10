@@ -1,123 +1,113 @@
 'use client';
 
 import Link from 'next/link';
+import { useState } from 'react';
 import type { GraphNode } from '@/lib/types';
 import { BROWSE_ORDER, TYPE_META } from '@/lib/types-meta';
 import { hrefFor } from '@/lib/data';
-import { neighboursOf, primaryText } from '@/lib/graph';
+import { primaryText } from '@/lib/graph';
 import { excerpt } from '@/lib/text';
 import { useMounted } from '@/lib/hooks';
 import { TypeMark } from '../TypeMark';
 import { useExplorer } from './ExplorerContext';
 
+type SortKey = 'type' | 'name';
+
+const byName = (a: GraphNode, b: GraphNode) => a.name.localeCompare(b.name, 'en', { sensitivity: 'base' });
+
 /**
- * The accessible equivalent of the map: one real table per entity type,
- * with the same filters and search applied. Each name links to the entry's
- * page; with JavaScript it opens the details panel instead (and the link's
- * page is one click away from there).
+ * The accessible equivalent of the map: every entry in one table, with its
+ * name, type and a short summary. The same filters and search apply, and it
+ * can be sorted by type or by name. Each name links to the entry's page;
+ * with JavaScript it opens the details panel instead.
  */
 export function TableView() {
-  const { data, index, visibleTypes, matches, searchTerm, select, selected } = useExplorer();
+  const { data, visibleTypes, matches, searchTerm, select, selected, announce } = useExplorer();
   const mounted = useMounted();
+  const [sort, setSort] = useState<SortKey>('type');
   const searching = searchTerm.trim().length > 0;
 
-  const types = BROWSE_ORDER.filter((t) => visibleTypes[t]);
-  if (!types.length) {
-    return (
-      <div className="wrap py-16">
-        <p className="lead">All entity types are filtered out. Turn one back on to see entries.</p>
-      </div>
+  const rows = data.nodes
+    .filter((n) => visibleTypes[n.type] && (!searching || matches.has(n.id)))
+    .sort((a, b) =>
+      sort === 'name' ? byName(a, b) : BROWSE_ORDER.indexOf(a.type) - BROWSE_ORDER.indexOf(b.type) || byName(a, b),
     );
-  }
+
+  const sortButton = (key: SortKey, label: string) => (
+    <button
+      type="button"
+      onClick={() => {
+        setSort(key);
+        announce(`Sorted by ${label.toLowerCase()}.`);
+      }}
+      className="inline-flex min-h-9 items-center gap-1 font-medium text-ink-muted hover:text-ink aria-[pressed=true]:text-ink"
+      aria-pressed={sort === key}
+    >
+      {label}
+      <span aria-hidden="true" className={sort === key ? '' : 'opacity-0'}>
+        ↓
+      </span>
+    </button>
+  );
 
   return (
-    <div className="md:h-full md:overflow-y-auto">
-      <div className="wrap space-y-14 pb-20 pt-8">
-        {types.map((type) => {
-          const meta = TYPE_META[type];
-          const rows = data.nodes
-            .filter((n) => n.type === type && (!searching || matches.has(n.id)))
-            .sort((a, b) => a.name.localeCompare(b.name, 'en', { sensitivity: 'base' }));
-          const total = data.nodes.filter((n) => n.type === type).length;
-          return (
-            <section key={type} aria-labelledby={`table-${meta.segment}`}>
-              <h2 id={`table-${meta.segment}`} className="heading mb-4 inline-flex items-center gap-2 text-[1.25rem]">
-                <TypeMark type={type} size="0.6em" />
-                {meta.plural}{' '}
-                <span className="meta text-base font-normal tabular-nums">
-                  {searching ? `${rows.length} of ${total} match` : `${total}`}
-                </span>
-              </h2>
-              {rows.length === 0 ? (
-                <p className="meta border-t border-rule py-4">No {meta.pluralLower} match &ldquo;{searchTerm.trim()}&rdquo;.</p>
-              ) : (
-                <div className="overflow-x-auto">
-                  <table className="w-full min-w-[36rem] border-collapse text-left text-[0.9375rem]">
-                    <caption className="sr-only">
-                      {meta.plural}: name, summary and connections. {rows.length} row{rows.length === 1 ? '' : 's'}.
-                    </caption>
-                    <thead>
-                      <tr className="border-y border-rule-strong">
-                        <th scope="col" className="meta w-[30%] py-2 pr-6 font-medium">
-                          Name
-                        </th>
-                        <th scope="col" className="meta py-2 pr-6 font-medium">
-                          Summary
-                        </th>
-                        <th scope="col" className="meta w-[22%] py-2 font-medium">
-                          Connections
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {rows.map((node) => (
-                        <Row
-                          key={node.id}
-                          node={node}
-                          summary={excerpt(primaryText(node), 150)}
-                          connections={connectionText(neighboursOf(index, node.id))}
-                          interactive={mounted}
-                          selected={selected?.id === node.id}
-                          onOpen={(el) => select(node, { returnFocusTo: el })}
-                        />
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              )}
-            </section>
-          );
-        })}
-      </div>
+    <div className="mx-auto max-w-[78rem] px-4 pb-20 pt-4 md:px-6">
+      {rows.length === 0 ? (
+        <p className="lead mt-10">
+          {searching ? `No entries match “${searchTerm.trim()}”.` : 'All entity types are filtered out. Turn one back on to see entries.'}
+        </p>
+      ) : (
+        <div className="mt-3 overflow-x-auto">
+          <table className="w-full border-collapse text-left text-[0.9375rem]">
+            <caption className="sr-only">
+              All entries: name, type and summary, sorted by {sort}. {rows.length} row{rows.length === 1 ? '' : 's'}.
+            </caption>
+            <thead>
+              <tr className="border-y border-rule-strong text-[0.875rem]">
+                <th scope="col" aria-sort={sort === 'name' ? 'ascending' : 'none'} className="w-[38%] py-1 pr-4 sm:w-[32%] sm:pr-6">
+                  {mounted ? sortButton('name', 'Name') : 'Name'}
+                </th>
+                <th scope="col" aria-sort={sort === 'type' ? 'ascending' : 'none'} className="hidden w-[9rem] py-1 pr-6 sm:table-cell">
+                  {mounted ? sortButton('type', 'Type') : 'Type'}
+                </th>
+                <th scope="col" className="meta py-1 font-medium">
+                  Summary
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((node) => (
+                <Row
+                  key={node.id}
+                  node={node}
+                  interactive={mounted}
+                  selected={selected?.id === node.id}
+                  onOpen={(el) => select(node, { returnFocusTo: el })}
+                />
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 }
 
-function connectionText(nodes: GraphNode[]): string {
-  return BROWSE_ORDER.map((t) => [t, nodes.filter((n) => n.type === t).length] as const)
-    .filter(([, n]) => n > 0)
-    .map(([t, n]) => `${n} ${n === 1 ? TYPE_META[t].singularLower : TYPE_META[t].pluralLower}`)
-    .join(', ');
-}
-
 function Row({
   node,
-  summary,
-  connections,
   interactive,
   selected,
   onOpen,
 }: {
   node: GraphNode;
-  summary: string;
-  connections: string;
   interactive: boolean;
   selected: boolean;
   onOpen: (el: HTMLElement) => void;
 }) {
+  const meta = TYPE_META[node.type];
   return (
     <tr className={`border-b border-rule align-top ${selected ? 'bg-surface' : ''}`}>
-      <th scope="row" className="py-3 pr-6 font-normal">
+      <th scope="row" className="py-3 pr-4 font-normal sm:pr-6">
         {interactive ? (
           <button
             type="button"
@@ -132,9 +122,19 @@ function Row({
             {node.name}
           </Link>
         )}
+        {/* On narrow screens the Type column folds into the name cell. */}
+        <span className={`mt-1 flex items-center gap-1.5 text-[0.8125rem] font-medium sm:hidden text-${meta.token}`}>
+          <TypeMark type={node.type} size="0.7em" />
+          {meta.singular}
+        </span>
       </th>
-      <td className="py-3 pr-6 font-serif text-base leading-relaxed text-ink">{summary}</td>
-      <td className="meta py-3">{connections || 'None recorded'}</td>
+      <td className={`hidden py-3 pr-6 sm:table-cell text-${meta.token}`}>
+        <span className="inline-flex items-center gap-2 whitespace-nowrap text-[0.875rem] font-medium">
+          <TypeMark type={node.type} size="0.7em" />
+          {meta.singular}
+        </span>
+      </td>
+      <td className="py-3 font-serif text-[0.9375rem] leading-relaxed text-ink sm:text-base">{excerpt(primaryText(node), 160)}</td>
     </tr>
   );
 }

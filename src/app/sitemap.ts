@@ -12,8 +12,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'monthly' as const,
       priority: 0.8,
     })),
-    { url: url('/explore'), changeFrequency: 'monthly', priority: 0.6 },
-    { url: url('/explore/table'), changeFrequency: 'monthly', priority: 0.6 },
+    { url: url('/table'), changeFrequency: 'monthly', priority: 0.6 },
     { url: url('/about'), changeFrequency: 'yearly', priority: 0.4 },
     ...graph.nodes.map((n) => ({
       url: url(hrefFor(n)),
