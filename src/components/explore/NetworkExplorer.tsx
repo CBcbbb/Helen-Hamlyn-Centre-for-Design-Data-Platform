@@ -270,9 +270,9 @@ export function NetworkExplorer({ data, layout: givenLayout }: { data: GraphData
       <noscript>
         <style>{'.js-only{display:none!important}'}</style>
       </noscript>
-      <div className="flex h-[calc(100dvh-3.5rem)] min-h-[28rem] flex-col md:h-[calc(100dvh-4rem)] md:min-h-[32rem]">
+      <div className="flex h-[calc(100dvh-3rem)] min-h-[28rem] flex-col md:h-[calc(100dvh-3.5rem)] md:min-h-[32rem]">
         <div className="border-b border-rule bg-paper">
-          <div className="flex items-center gap-2 px-3 py-2 md:gap-4 md:px-6">
+          <div className="flex items-center gap-2 px-3 py-1.5 md:gap-4 md:px-6">
             <h1 className="sr-only">Projects, methods, people and partners of the Helen Hamlyn Centre for Design</h1>
             <search className="js-only relative min-w-0 flex-1 md:max-w-md">
               <label htmlFor="network-search" className="sr-only">
@@ -297,7 +297,7 @@ export function NetworkExplorer({ data, layout: givenLayout }: { data: GraphData
                 }}
                 placeholder={wide ? 'Search the network' : 'Search'}
                 aria-describedby="search-status search-hint"
-                className="h-10 w-full rounded-full border-0 bg-surface pl-11 pr-11 text-base text-ink ring-1 ring-control transition-shadow placeholder:text-ink-muted hover:ring-ink focus:bg-paper focus:outline-none focus-visible:ring-2 focus-visible:ring-accent sm:pr-20 [&::-webkit-search-cancel-button]:hidden"
+                className="h-9 w-full rounded-full text-[0.9375rem] border-0 bg-surface pl-11 pr-11 text-base text-ink ring-1 ring-control transition-shadow placeholder:text-ink-muted hover:ring-ink focus:bg-paper focus:outline-none focus-visible:ring-2 focus-visible:ring-accent sm:pr-20 [&::-webkit-search-cancel-button]:hidden"
               />
               <span id="search-hint" className="sr-only">
                 Shortcut: {mod} K.
@@ -350,7 +350,7 @@ export function NetworkExplorer({ data, layout: givenLayout }: { data: GraphData
                           e.preventDefault();
                           switchView(v);
                         }}
-                        className="inline-flex min-h-9 items-center rounded-full px-3.5 text-[0.9375rem] font-medium text-ink-muted no-underline transition-colors hover:text-ink aria-[current]:bg-paper aria-[current]:text-ink aria-[current]:shadow-[0_1px_2px_rgb(34_33_42/0.12)] aria-[current]:ring-1 aria-[current]:ring-rule-strong"
+                        className="inline-flex min-h-8 items-center rounded-full px-3.5 text-[0.9375rem] font-medium text-ink-muted no-underline transition-colors hover:text-ink aria-[current]:bg-paper aria-[current]:text-ink aria-[current]:shadow-[0_1px_2px_rgb(34_33_42/0.12)] aria-[current]:ring-1 aria-[current]:ring-rule-strong"
                       >
                         {v === 'map' ? 'Map' : 'Table'}
                       </Link>

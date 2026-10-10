@@ -20,7 +20,9 @@ import { forceLink, forceManyBody, forceSimulation, forceX, forceY, forceCollide
 import type { SimulationLinkDatum, SimulationNodeDatum } from 'd3-force';
 import type { GraphData, NodeType } from './types';
 
-export const LAYOUT_WIDTH = 1600;
+export const LAYOUT_WIDTH = 2000;
+/** The columns use the middle of the frame; the constellation spreads across all of it. */
+const COLUMNS_SPAN = 1600;
 export const COLUMN_ORDER: NodeType[] = ['Partners', 'People', 'Projects', 'Methods'];
 /** Column positions as fractions of the map width. */
 export const COLUMN_X = [0.01, 0.27, 0.53, 0.78];
@@ -85,6 +87,9 @@ export interface Layout {
   height: number;
   /** Column headings, used by the columns arrangement. */
   columns: { type: NodeType; x: number }[];
+  /** Where the column headings sit, and the area the columns arrangement occupies (to zoom to it). */
+  columnsTop: number;
+  columnsBounds: { x0: number; y0: number; x1: number; y1: number };
   positions: Record<Arrangement, Record<string, Position>>;
 }
 
@@ -109,22 +114,29 @@ export function computeLayout(data: GraphData): Layout {
   const constellation = computeConstellation(
     data,
     LAYOUT_WIDTH,
-    Math.max(perColumn * 38 + 140, Math.round(Math.sqrt(data.nodes.length) * 128)),
+    Math.max(perColumn * 38 + 140, Math.round(Math.sqrt(data.nodes.length) * 175)),
   );
   const height = constellation.height;
+  // The columns keep their own natural height, centred in the shared frame.
+  const colHeight = Math.min(height, perColumn * 38 + 140);
+  const colTop = Math.round((height - colHeight) / 2);
   return {
     width: LAYOUT_WIDTH,
     height,
     columns: COLUMN_ORDER.map((type) => ({ type, x: columnX(type) })),
+    columnsTop: colTop + 46,
+    columnsBounds: { x0: (LAYOUT_WIDTH - COLUMNS_SPAN) / 2, y0: colTop, x1: (LAYOUT_WIDTH + COLUMNS_SPAN) / 2, y1: colTop + colHeight },
     positions: {
       constellation: constellation.positions,
-      columns: computeColumns(data, height),
+      columns: Object.fromEntries(
+        Object.entries(computeColumns(data, colHeight)).map(([id, p]) => [id, { x: p.x, y: p.y + colTop }]),
+      ),
     },
   };
 }
 
 function columnX(t: NodeType): number {
-  return COLUMN_X[COLUMN_ORDER.indexOf(t)] * LAYOUT_WIDTH + NODE_RADIUS + 12;
+  return (LAYOUT_WIDTH - COLUMNS_SPAN) / 2 + COLUMN_X[COLUMN_ORDER.indexOf(t)] * COLUMNS_SPAN + NODE_RADIUS + 12;
 }
 
 /**
@@ -152,8 +164,8 @@ function computeConstellation(data: GraphData, width: number, height: number): {
   });
   const links: SimulationLinkDatum<SimNode>[] = data.links.map((l) => ({ source: l.source, target: l.target }));
 
-  const PAD_X = 26;
-  const PAD_Y = 18;
+  const PAD_X = 56;
+  const PAD_Y = 40;
   const boxCollide = (strength = 0.7) => {
     for (let i = 0; i < nodes.length; i++) {
       for (let j = i + 1; j < nodes.length; j++) {
@@ -194,13 +206,13 @@ function computeConstellation(data: GraphData, width: number, height: number): {
       'link',
       forceLink<SimNode, SimulationLinkDatum<SimNode>>(links)
         .id((d) => d.id)
-        .distance(150)
+        .distance(210)
         .strength(0.22),
     )
-    .force('charge', forceManyBody<SimNode>().strength(-420).distanceMax(520))
+    .force('charge', forceManyBody<SimNode>().strength(-900).distanceMax(800))
     .force('x', forceX<SimNode>(width / 2).strength(0.012))
     .force('y', forceY<SimNode>(height / 2).strength(0.07))
-    .force('collide', forceCollide<SimNode>(R + 34))
+    .force('collide', forceCollide<SimNode>(R + 60))
     .stop();
 
   for (let i = 0; i < 500; i++) {

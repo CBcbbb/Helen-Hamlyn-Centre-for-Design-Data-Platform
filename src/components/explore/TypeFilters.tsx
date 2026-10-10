@@ -24,7 +24,7 @@ export function TypeFilters({ variant }: { variant: 'menu' | 'row' }) {
       <ul className={variant === 'menu' ? 'space-y-0.5' : 'flex flex-nowrap gap-x-0.5'}>
         {BROWSE_ORDER.map((t) => (
           <li key={t}>
-            <label className="group relative flex min-h-10 cursor-pointer select-none items-center gap-2.5 rounded-md px-2 text-[0.9375rem] text-ink ring-accent transition-colors hover:bg-surface has-[:focus-visible]:ring-2">
+            <label className="group relative flex min-h-9 cursor-pointer select-none items-center gap-2.5 rounded-md px-2 text-[0.9375rem] text-ink ring-accent transition-colors hover:bg-surface has-[:focus-visible]:ring-2">
               <input
                 type="checkbox"
                 checked={visibleTypes[t]}

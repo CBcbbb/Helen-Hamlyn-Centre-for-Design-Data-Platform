@@ -33,7 +33,7 @@ export function NavLinks() {
               <Link
                 href={href}
                 aria-current={current}
-                className="relative inline-flex min-h-11 items-center px-[0.45rem] text-ink-muted sm:px-2 no-underline transition-colors hover:text-ink aria-[current]:text-ink aria-[current]:after:absolute aria-[current]:after:inset-x-[0.45rem] sm:aria-[current]:after:inset-x-2 aria-[current]:after:bottom-2 aria-[current]:after:h-px aria-[current]:after:bg-ink"
+                className="relative inline-flex min-h-10 items-center px-[0.45rem] text-ink-muted sm:px-2 no-underline transition-colors hover:text-ink aria-[current]:text-ink aria-[current]:after:absolute aria-[current]:after:inset-x-[0.45rem] sm:aria-[current]:after:inset-x-2 aria-[current]:after:bottom-2 aria-[current]:after:h-px aria-[current]:after:bg-ink"
               >
                 {label}
               </Link>

@@ -9,11 +9,11 @@ import { NavLinks } from './NavLinks';
  */
 export function SiteHeader() {
   return (
-    <header className="h-14 border-b border-rule bg-paper md:h-16">
+    <header className="h-12 border-b border-rule bg-paper md:h-14">
       <div className="flex h-full items-center gap-3 px-3 md:gap-8 md:px-6">
         <Link href="/" className="group flex flex-none items-center gap-3 text-ink no-underline">
-          <Image src="/hhcd-logo.png" alt="" width={854} height={509} priority className="h-8 w-auto flex-none md:h-9" />
-          <span className="heading text-[0.9375rem] leading-tight max-lg:sr-only">
+          <Image src="/hhcd-logo.png" alt="" width={854} height={509} priority className="h-7 w-auto flex-none md:h-8" />
+          <span className="heading text-[0.875rem] leading-tight max-lg:sr-only">
             <span className="block">Helen Hamlyn Centre for Design</span>
             <span className="block text-ink-muted">Data Platform</span>
           </span>

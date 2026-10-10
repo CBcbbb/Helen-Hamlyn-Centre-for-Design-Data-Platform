@@ -258,6 +258,35 @@ export function GraphView() {
   }, [mounted, fitTransform, openingTransform]);
 
   const duration = reducedMotion ? 0 : 320;
+
+  // Switching arrangement also frames it: the columns are zoomed to fit,
+  // the constellation goes back to its readable opening view.
+  const firstArrangement = useRef(true);
+  useEffect(() => {
+    if (firstArrangement.current) {
+      firstArrangement.current = false;
+      return;
+    }
+    const svg = svgRef.current;
+    if (!svg || !zoomRef.current || !size) return;
+    let target: ZoomTransform;
+    if (arrangement === 'columns') {
+      const b = layout.columnsBounds;
+      const top = 52;
+      const k = Math.min(size.w / (b.x1 - b.x0 + 80), (size.h - top - 56) / (b.y1 - b.y0)) * 0.98;
+      target = zoomIdentity
+        .translate(size.w / 2 - ((b.x0 + b.x1) / 2) * k, top + (size.h - top - 56) / 2 - ((b.y0 + b.y1) / 2) * k)
+        .scale(k);
+    } else {
+      target = openingTransform(size.w, size.h);
+    }
+    select(svg)
+      .transition()
+      .duration(reducedMotion ? 0 : MOVE_MS + TYPE_DELAY * 3)
+      .call(zoomRef.current.transform, target);
+    // Only when the arrangement changes.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [arrangement]);
   const zoomBy = (factor: number) => {
     const svg = svgRef.current;
     movedByUserRef.current = true;
@@ -406,7 +435,7 @@ export function GraphView() {
           layout.columns
             .filter((c) => visibleTypes[c.type])
             .map((c) => (
-              <text key={c.type} x={c.x - 6} y={46} className="fill-ink-muted" style={{ font: '600 14px var(--font-display)' }}>
+              <text key={c.type} x={c.x - 6} y={layout.columnsTop} className="fill-ink-muted" style={{ font: '600 14px var(--font-display)' }}>
                 {TYPE_META[c.type].plural} ({counts[c.type]})
               </text>
             ))}
