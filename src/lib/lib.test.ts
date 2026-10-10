@@ -2,9 +2,8 @@ import { describe, expect, it } from 'vitest';
 import { slugify } from './slug';
 import { excerpt, linkify, numberedSteps, paragraphs, urlLabel } from './text';
 import { filterByType, indexGraph, neighboursOf, searchNodes, twoStep } from './graph';
-import { computeLayout, nearestInDirection } from './layout';
-import { graph, getBySlug, getFeaturedProject, hrefFor, nodesOfType } from './data';
-import { getFeaturedNeighbourhood } from './featured';
+import { computeLayout, nearestInDirection, shortLabel, NODE_RADIUS } from './layout';
+import { graph, getBySlug, getFeaturedProject, hrefFor, index, nodesOfType } from './data';
 import type { GraphData } from './types';
 
 describe('slugify', () => {
@@ -85,30 +84,74 @@ describe('graph helpers', () => {
 });
 
 describe('layout', () => {
-  it('is deterministic and puts each type in its own column', () => {
-    const a = computeLayout(graph);
-    const b = computeLayout(graph);
-    expect(a.positions).toEqual(b.positions);
+  const layout = computeLayout(graph);
+
+  it('is deterministic (server and browser agree)', () => {
+    expect(computeLayout(graph).positions).toEqual(layout.positions);
+  });
+
+  it('has a position for every entry in both arrangements, inside the shared frame', () => {
+    for (const arrangement of ['constellation', 'columns'] as const) {
+      for (const n of graph.nodes) {
+        const p = layout.positions[arrangement][n.id];
+        expect(p, `${arrangement} ${n.id}`).toBeDefined();
+        expect(p.x).toBeGreaterThan(0);
+        expect(p.x + NODE_RADIUS + 8 + shortLabel(n.name).length * 7.2).toBeLessThanOrEqual(layout.width);
+        expect(p.y).toBeGreaterThan(0);
+        expect(p.y).toBeLessThan(layout.height);
+      }
+    }
+  });
+
+  it('columns: puts each type in its own column, labels at least 30 units apart', () => {
+    const { columns: positions } = layout.positions;
     const xs = new Map<string, Set<number>>();
     for (const n of graph.nodes) {
       const set = xs.get(n.type) ?? new Set();
-      set.add(a.positions[n.id].x);
+      set.add(positions[n.id].x);
       xs.set(n.type, set);
     }
     for (const set of xs.values()) expect(set.size).toBe(1);
-  });
-  it('keeps labels in a column at least 30 units apart and inside the canvas', () => {
-    const { positions, height } = computeLayout(graph);
     for (const t of ['People', 'Partners', 'Projects', 'Methods'] as const) {
       const ys = graph.nodes
         .filter((n) => n.type === t)
         .map((n) => positions[n.id].y)
         .sort((x, y) => x - y);
       for (let i = 1; i < ys.length; i++) expect(ys[i] - ys[i - 1]).toBeGreaterThanOrEqual(29);
-      expect(ys[0]).toBeGreaterThan(0);
-      expect(ys.at(-1)!).toBeLessThan(height);
     }
   });
+
+  it('constellation: no type is given its own place, and no two labels overlap', () => {
+    const { constellation: positions } = layout.positions;
+    // Types are mixed, not separated into bands.
+    const meanX = (t: string) => {
+      const list = graph.nodes.filter((n) => n.type === t).map((n) => positions[n.id].x);
+      return list.reduce((a, b) => a + b, 0) / list.length;
+    };
+    const means = ['People', 'Partners', 'Projects', 'Methods'].map(meanX);
+    expect(Math.max(...means) - Math.min(...means)).toBeLessThan(layout.width * 0.4);
+    // Label boxes (mark plus label) don't overlap.
+    const boxes = graph.nodes.map((n) => {
+      const p = positions[n.id];
+      return { l: p.x - NODE_RADIUS, r: p.x + NODE_RADIUS + 8 + shortLabel(n.name).length * 7.2, t: p.y - 9, b: p.y + 9 };
+    });
+    for (let i = 0; i < boxes.length; i++) {
+      for (let j = i + 1; j < boxes.length; j++) {
+        const a = boxes[i];
+        const b = boxes[j];
+        const overlap = a.l < b.r && b.l < a.r && a.t < b.b && b.t < a.b;
+        expect(overlap, `${graph.nodes[i].name} / ${graph.nodes[j].name}`).toBe(false);
+      }
+    }
+  });
+
+  it('shortens long labels at a word boundary', () => {
+    expect(shortLabel('Short name')).toBe('Short name');
+    const long = shortLabel('Enhancing Future Community Connectivity for Ageing Well in Place');
+    expect(long.length).toBeLessThanOrEqual(34);
+    expect(long.endsWith('…')).toBe(true);
+  });
+
   it('arrow navigation picks the nearest node in that direction', () => {
     const pos = { a: { x: 0, y: 0 }, below: { x: 5, y: 50 }, far: { x: 0, y: 200 }, right: { x: 100, y: 10 } };
     const ids = Object.keys(pos);
@@ -131,12 +174,9 @@ describe('dataset', () => {
     }
     for (const n of graph.nodes) expect(getBySlug(n.type, n.slug)).toBe(n);
   });
-  it('features a project with people and methods to step out to', () => {
+  it('starts the guide from a real project with connections to follow', () => {
     const p = getFeaturedProject();
     expect(hrefFor(p)).toBe('/projects/design-bugs-out');
-    const hood = getFeaturedNeighbourhood();
-    expect(hood.people.length).toBeGreaterThan(0);
-    expect(hood.methods.length).toBeGreaterThan(0);
-    expect(hood.related[0].shared.length).toBeGreaterThanOrEqual(hood.related.at(-1)!.shared.length);
+    expect(index.neighbours.get(p.id)!.size).toBeGreaterThan(2);
   });
 });

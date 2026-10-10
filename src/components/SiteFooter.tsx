@@ -44,8 +44,8 @@ export function SiteFooter() {
           <p className="meta mb-2">This site</p>
           <ul className="space-y-1.5">
             <li>
-              <Link href="/explore" className="entity-link">
-                Network map and table
+              <Link href="/table" className="entity-link">
+                The network as a table
               </Link>
             </li>
             <li>

@@ -5,6 +5,30 @@ For Chongbo. This explains what changed between the original platform and this r
 - **Original:** [CBcbbb/Helen-Hamlyn-Centre-Platform](https://github.com/CBcbbb/Helen-Hamlyn-Centre-Platform). Create React App, JavaScript, Tailwind 3, D3 7. Not modified.
 - **Rebuild:** this repository. Next.js 16 (App Router), TypeScript (strict), Tailwind 4, d3-force and d3-zoom. Not deployed.
 
+## Second iteration: back to the rhizome
+
+Added on 10 October 2026, after reviewing the rebuild against the original platform's intent. The original's introduction describes "a rhizomatic map of projects, methods, people, and organisations… inspired by mycelium and constellations of stars". The first rebuild drifted from that in two ways, and both are now changed.
+
+| First rebuild | Now |
+|---|---|
+| Home page: a long article that explained one project and stepped outwards ("Start with one project…", "One step out", "Two steps out") | The map is the home page. Nothing on the page explains the idea; the guide shows how to use it, by doing |
+| The map: four fixed columns, which read as an order (partners → people → projects → methods) | A constellation by default, with no hierarchy. One control sorts the same entries into the columns and back, with an animated move |
+| Entry size grew with the number of connections | Every entry is the same size |
+| Mobile details: a full-screen dialog that hid the map | A sheet over the lower part of the map; the entry is panned into view above it, and the map stays usable |
+| `PR012`/`PD012` mismatch reported, link dropped | Fixed in `data/PROJECTS.csv` and `data/LINKS.csv`: 104 connections |
+
+**The guide.** On a first visit, one project (Design Bugs Out) pulses on the map, with a card beside it. Four cards follow what you do: open it; follow a connection (its connections are highlighted on the map and listed in the panel); step back along your path; try the other arrangement. Each card waits for the action it describes, never takes focus or blocks the page, sits in the reading order just before what it points at, and can be skipped. Finishing or skipping is remembered in the browser; the guide button in the map controls, or `/?guide`, starts it again. Arriving from an entity page's "See it in the network map" link skips it.
+
+**The path.** Every entry you open is added to a path at the top of the details, and drawn on the map in ink. Selecting an earlier step goes back to it. This is the "follow where it leads" idea from the first rebuild, now enacted instead of written down.
+
+**Keyboard and screen readers.** Arrow keys move to the nearest entry in that direction in either arrangement. The guide's cards, the arrangement control (two native radio buttons), the path (a `nav` with `aria-current="step"`) and the sheet's Expand button (`aria-expanded`) are all keyboard-operable and labelled. Switching arrangement and starting the guide are announced. The pulse and the move are off with reduced motion; forced colours keep the pulse and cards visible.
+
+**Zoom.** The map now fits the screen when it opens. On a narrow screen it opens at a readable zoom around the guide's project. Zoomed far out, only emphasised entries (selected, hovered, on your path, matching a search) keep a label, drawn at a readable size.
+
+**Routes.** `/explore` and `/explore/table` redirect permanently to `/` and `/table`.
+
+**Checks, re-run for this iteration.** Lint, typecheck, 57 unit and component tests, the contrast script (27 pairings), the production build, and 43 Playwright tests at 1440px and 390px in Chrome, including axe on the guide, the path and the columns arrangement, the guide by keyboard alone, switching arrangement (including mid-move), the mobile sheet, 40px touch targets on the map controls and no sideways scrolling at 320px. Sections 1 to 8 below describe the first rebuild; where they conflict with this section, this section is current.
+
 ## Summary
 
 | Goal | Status |
@@ -201,14 +225,14 @@ Tested end to end on a throwaway copy of the repo: wrong password rejected, sign
 - **Screen reader, Firefox and Safari testing** (see above).
 - **Deployment.** Nothing was deployed, as asked. `NEXT_PUBLIC_SITE_URL` must be set for correct canonical and Open Graph URLs on any domain other than the Vercel production one.
 - **The UKRI and EU co-funded logos** in the original `public/` folder were not used anywhere in the original app either, so they were left out rather than guessing where funder credits belong.
-- **Data typos were not corrected**, since the content belongs to the Centre: for example "PearsoLloyd", "scaerios", "persons", "Autism at Kingood", and the `PR012`/`PD012` mismatch. The report flags the link; the rest are for the Centre to fix in the spreadsheet.
+- **Data typos were not corrected**, since the content belongs to the Centre: for example "PearsoLloyd", "scaerios", "persons", "Autism at Kingood". (The `PR012`/`PD012` ID mismatch was fixed in the second iteration.)
 - **Dark mode.** Not asked for, and the brand palette was designed for white.
 
 ## 6. Decisions for you
 
-1. **The featured project.** Design Bugs Out was chosen for the reasons above. You know which project works best as a first example when you teach. It is one constant to change.
+1. **The guide's project.** Design Bugs Out was chosen for the reasons above. You know which project works best as a first example when you teach. It is one constant to change.
 2. **How the admin should save in production.** Options: (a) keep editing locally and deploy by pushing to git, which needs nothing new; (b) have the admin commit the CSV changes to GitHub through its API, so Vercel redeploys automatically, which is a small, well-understood addition; (c) move the data to a hosted store. Suggestion: (a) now and (b) if non-technical colleagues need to edit.
-3. **The `PR012`/`PD012` ID.** One link to Workshops is dropped because the IDs don't match. Fixing the ID in PROJECTS.csv or the link in LINKS.csv restores it.
+3. **The `PR012`/`PD012` ID.** Resolved in the second iteration: the project's ID is now `PR012`, like the other sixteen.
 4. **Whether the old `/admin` password should be rotated.** It is in the public original repo, both in the client code and in ADMIN_GUIDE.md, so anyone can read it.
 5. **Domain and launch.** Whether this replaces the live site, sits beside it, or stays a portfolio piece. The URLs are new, so if it replaces the original, nothing old needs redirecting except `/`.
 6. **Removing `Cmd/Ctrl+B` and Reset.** Both were deliberate (see above); say if the Centre relied on them.
@@ -242,8 +266,8 @@ npm run dev                  # sign in at http://localhost:3000/admin
 
 Five honest points for an interview:
 
-1. **"I turned 'overview first' around because of what I saw while teaching."** Students learning from past research start from one real example, so the homepage now explains one project and walks outwards a step at a time; the full graph is still there, just at the end. It's a design decision grounded in observation, and it changed the information architecture, not just the styling.
+1. **"I kept the rhizome and taught it by doing."** Students learning from past research start from one real example, but the platform's point is that there is no centre and no hierarchy. So the map stays a free constellation where every entry is the same size, and a short guide highlights one project and moves on only when you act: open it, follow a connection, step back along your path. Nothing on the page explains the concept; you experience it.
 2. **"I fixed an invisible problem: the site had no URLs."** Everything lived in client-side state under `/`, so no project could be found, linked to or shared. Static generation gave each of the 48 entries a real page, and the same change made the site work without JavaScript and made it faster.
-3. **"I made the graph keyboard-operable instead of only pointing people to the table."** Ordering the layout into columns gave it a reading order, which made arrow-key navigation meaningful. The table is still offered as an equal alternative, and both share search and filters.
+3. **"Two readings of one dataset, one movement between them."** The constellation shows relationships; the columns show structure. Both layouts share a frame and are computed at build time, so switching is a staggered move of the same entries rather than a new picture, and arrow-key navigation works spatially in both. The table is still offered as an equal alternative.
 4. **"I used tooling to keep myself honest."** A contrast script that reads the real CSS caught a 1.67:1 checkbox border, and axe runs at desktop and mobile widths in the browser tests. The limits are clear too: no screen reader or Safari testing yet.
 5. **"I treated the data as the source of truth."** The original admin overwrote generated JSON, so edits were lost on the next build; the new one edits the spreadsheets and leaves untouched cells byte-identical. The conversion now reports data problems, such as one link dropped because of an ID typo, instead of hiding them. The rebuild was done with an AI coding assistant working from my brief, and I can walk through every decision and trade-off.

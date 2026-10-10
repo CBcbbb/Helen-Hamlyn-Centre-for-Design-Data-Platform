@@ -110,7 +110,7 @@ export function EntityPage({ node }: { node: GraphNode }) {
           )}
 
           <p className="mt-10 border-t border-rule pt-6 text-[0.9375rem]">
-            <Link href={`/explore?focus=${encodeURIComponent(node.id)}`} className="link">
+            <Link href={`/?focus=${encodeURIComponent(node.id)}`} className="link">
               See {node.name.length > 40 ? `this ${meta.singularLower}` : node.name} in the network map
             </Link>
           </p>

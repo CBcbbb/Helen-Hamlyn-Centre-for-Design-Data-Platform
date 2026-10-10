@@ -248,7 +248,7 @@
     },
     {
       "type": "Projects",
-      "id": "PD012",
+      "id": "PR012",
       "name": "Autism at Kingwood",
       "description": "This was a pioneering,6-year partnership exploring the intersection of autism and design,  a field that was largely uncharted in 2010. Each year a new design brief was focussed; they ranged from workplace and garden design to the built environment and everyday activities.",
       "who_involved": "Autism at Kingwood",
@@ -802,7 +802,7 @@
     },
     {
       "source": "P005",
-      "target": "PD012",
+      "target": "PR012",
       "strength": 1
     },
     {
@@ -853,6 +853,11 @@
     {
       "source": "P010",
       "target": "PR008",
+      "strength": 1
+    },
+    {
+      "source": "PR012",
+      "target": "M005",
       "strength": 1
     },
     {

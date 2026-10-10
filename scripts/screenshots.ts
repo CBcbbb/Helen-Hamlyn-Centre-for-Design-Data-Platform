@@ -13,10 +13,33 @@ const OUT = path.resolve(__dirname, '..', 'docs', 'screenshots');
 const FALLBACK = '/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
 const executablePath = process.env.CHROMIUM_PATH ?? (fs.existsSync(FALLBACK) ? FALLBACK : undefined);
 
-const SHOTS: { name: string; path: string; fullPage: boolean }[] = [
-  { name: 'home', path: '/', fullPage: true },
+type Shot = { name: string; path: string; fullPage: boolean; prepare?: (page: import('@playwright/test').Page) => Promise<void> };
+const SHOTS: Shot[] = [
+  // First visit: the constellation with the guide's first card.
+  { name: 'home', path: '/', fullPage: false },
+  // Following connections: details open, path drawn on the map.
+  {
+    name: 'path',
+    path: '/',
+    fullPage: false,
+    prepare: async (page) => {
+      await page.getByRole('button', { name: 'Open Design Bugs Out' }).click();
+      await page.getByRole('complementary').getByRole('button', { name: 'Hua Dong' }).click();
+      await page.getByRole('complementary').getByRole('button', { name: 'Research Associate Programme' }).click();
+    },
+  },
+  // The same network arranged by type.
+  {
+    name: 'columns',
+    path: '/',
+    fullPage: false,
+    prepare: async (page) => {
+      await page.getByRole('button', { name: 'Skip the guide' }).click();
+      await page.getByRole('radio', { name: 'By type' }).check({ force: true });
+      await page.waitForTimeout(1300);
+    },
+  },
   { name: 'project', path: '/projects/design-bugs-out', fullPage: true },
-  { name: 'explore', path: '/explore', fullPage: false },
 ];
 const WIDTHS = [1440, 390];
 
@@ -26,8 +49,15 @@ async function main() {
   for (const width of WIDTHS) {
     const page = await browser.newPage({ viewport: { width, height: width > 800 ? 900 : 844 }, deviceScaleFactor: 1 });
     for (const shot of SHOTS) {
+      await page.context().clearCookies();
       await page.goto(BASE + shot.path, { waitUntil: 'networkidle' });
+      await page.evaluate(() => localStorage.clear());
+      await page.reload({ waitUntil: 'networkidle' });
       await page.waitForTimeout(300);
+      if (shot.prepare) await shot.prepare(page);
+      // Clicking inside the details sheet can scroll the window; show the map as a person would see it.
+      if (!shot.fullPage) await page.evaluate(() => window.scrollTo(0, 0));
+      await page.waitForTimeout(400);
       const file = path.join(OUT, `${shot.name}-${width}.png`);
       await page.screenshot({ path: file, fullPage: shot.fullPage });
       console.log(path.relative(process.cwd(), file));

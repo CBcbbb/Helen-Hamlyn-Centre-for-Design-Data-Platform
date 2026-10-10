@@ -1,21 +1,22 @@
 # Helen Hamlyn Centre for Design Data Platform
 
-A public map of research from the Helen Hamlyn Centre for Design at the Royal College of Art: 17 projects, the 12 methods they used, the 10 people who worked on them and 9 partner organisations, and the 103 connections between them. It is for artists, researchers, the public and funders who want to find methods they can adapt to their own work.
+A public map of research from the Helen Hamlyn Centre for Design at the Royal College of Art: 17 projects, the 12 methods they used, the 10 people who worked on them and 9 partner organisations, and the 104 connections between them. It is for artists, researchers, the public and funders who want to find methods they can adapt to their own work.
 
 Designed and built by Chongbo Ning.
 
 This repository is a rebuild of the [original platform](https://github.com/CBcbbb/Helen-Hamlyn-Centre-Platform) (Create React App, JavaScript, D3). The original is still in use by the Centre and is unchanged. [REPORT.md](REPORT.md) explains what changed and why.
 
-| Home | Project page | Network |
+| First visit | Following connections | Arranged by type |
 |---|---|---|
-| ![Homepage](docs/screenshots/home-1440.png) | ![Project page](docs/screenshots/project-1440.png) | ![Network map](docs/screenshots/explore-1440.png) |
+| ![The map as a constellation, with the guide's first card](docs/screenshots/home-1440.png) | ![Details open, with the path drawn on the map](docs/screenshots/path-1440.png) | ![The same entries sorted into four columns](docs/screenshots/columns-1440.png) |
 
 ## What is on the site
 
-- **Home (`/`)** starts from one featured project, then steps outwards: the people and methods behind it, the other projects and partners they lead to, then everything.
+- **The map (`/`)** is the home page: every entry and connection as a rhizomatic constellation, with no hierarchy and every entry the same size. One control rearranges the same entries into four columns by type, and back, with an animated move. Search, type filters, a details panel, a path of the entries you have opened, and keyboard shortcuts.
+- **A first-visit guide** inside the map: one project pulses, and four short cards follow what you do (open it, follow a connection, step back along your path, try the other arrangement). Skippable, remembered in the browser, and restartable from the map's controls or `/?guide`.
+- **The table (`/table`)**: the same data as one accessible table per type, sharing search, filters and details with the map.
 - **Entity pages** (`/projects/[slug]`, `/methods/[slug]`, `/people/[slug]`, `/partners/[slug]`): one static page for each of the 48 entries, with its connections listed as links.
 - **Index pages** (`/projects`, `/methods`, `/people`, `/partners`) with a short summary of each entry.
-- **Network (`/explore` and `/explore/table`)**: the whole network as a map or as tables, with search, type filters, a details panel and keyboard shortcuts.
 - **About (`/about`)**: what the platform is, how to use it, accessibility and translation help.
 - **Admin (`/admin`)**: an optional editor for the spreadsheet data, switched off unless configured.
 
@@ -64,7 +65,16 @@ data/PEOPLE.csv  data/PARTNERS.csv  data/PROJECTS.csv  data/METHODS.csv  data/LI
 
 Never edit the JSON by hand: edit the CSVs (or use the admin), run `npm run data:build`, and commit both.
 
-The typed data model is in `src/lib/types.ts`. Each entry gets a URL slug from its name; to feature a different project on the homepage, change `FEATURED_PROJECT_ID` in `src/lib/data.ts`.
+The typed data model is in `src/lib/types.ts`. Each entry gets a URL slug from its name; to start the guide from a different project, change `FEATURED_PROJECT_ID` in `src/lib/data.ts`.
+
+## Map layouts
+
+`src/lib/layout.ts` computes both arrangements with d3-force at build time (in `src/app/(network)/layout.tsx`), so the browser never runs the simulation and the map is in the server HTML. d3-force is deterministic, so positions are identical on every build and visit.
+
+- **Constellation**: connected entries attract, all entries repel, and a box-collision pass keeps every mark and label clear of the others. Unit tests check that no two labels overlap and that types are not separated into bands.
+- **By type**: each type pulled into its own column, ordered within it to reduce crossings.
+
+Both share one frame, so switching is a pure movement of the same entries: each type sets off slightly after the previous one, and edges blend from straight lines to S-curves. Switching again mid-move turns round smoothly. With reduced motion the switch is instant.
 
 ## Colours
 
@@ -100,9 +110,10 @@ Next.js 16 (App Router, static generation), React 19, TypeScript (strict), Tailw
 ## Project structure
 
 ```
-src/app/                  routes: home, entity pages, indexes, explore, about, admin, sitemap, robots, OG images
+src/app/(network)/        the map (/) and table (/table), sharing one explorer
+src/app/                  entity pages, indexes, about, admin, sitemap, robots, OG images
 src/components/           shared UI: entity page and fields, type marks, header, footer
-src/components/explore/   network map, table, details panel, dialogs
+src/components/explore/   map, table, details panel and path, guide cards, dialogs
 src/lib/                  data model, conversion, graph helpers, layout, text helpers, admin
 scripts/                  convert.ts, contrast.ts, screenshots.ts
 data/                     source CSVs

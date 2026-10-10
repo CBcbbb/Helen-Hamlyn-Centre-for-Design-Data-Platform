@@ -4,11 +4,11 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 const LINKS = [
+  { href: '/', label: 'Map' },
   { href: '/projects', label: 'Projects' },
   { href: '/methods', label: 'Methods' },
   { href: '/people', label: 'People' },
   { href: '/partners', label: 'Partners' },
-  { href: '/explore', label: 'Network' },
   { href: '/about', label: 'About' },
 ];
 
@@ -18,7 +18,16 @@ export function NavLinks() {
     <nav aria-label="Main" className="-mx-4 overflow-x-auto px-2 [scrollbar-width:none] md:mx-0 md:overflow-visible md:px-0 [&::-webkit-scrollbar]:hidden">
       <ul className="flex items-center whitespace-nowrap text-[0.875rem] sm:text-[0.9375rem] md:-mx-2 md:gap-x-1">
         {LINKS.map(({ href, label }) => {
-          const current = pathname === href ? 'page' : pathname.startsWith(`${href}/`) ? 'true' : undefined;
+          const current =
+            pathname === href
+              ? 'page'
+              : href === '/'
+                ? pathname === '/table'
+                  ? 'true'
+                  : undefined
+                : pathname.startsWith(`${href}/`)
+                  ? 'true'
+                  : undefined;
           return (
             <li key={href}>
               <Link

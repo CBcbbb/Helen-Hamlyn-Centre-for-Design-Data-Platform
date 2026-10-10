@@ -11,10 +11,10 @@ export const graph: GraphData = raw as GraphData;
 export const index = indexGraph(graph);
 
 /**
- * The project the homepage opens with. Chosen for being one concrete,
- * well-documented example with a spread of connections: three people,
- * four methods, a stated legacy, and a public archive link. Changing this ID
- * is the only thing needed to feature a different project.
+ * The project the first-visit guide highlights on the map. Chosen for being
+ * one concrete, well-documented example with a spread of connections: three
+ * people, four methods, a stated legacy, and a public archive link. Changing
+ * this ID is the only thing needed to start the guide somewhere else.
  */
 export const FEATURED_PROJECT_ID = 'PR004';
 

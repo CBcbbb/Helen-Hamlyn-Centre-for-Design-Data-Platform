@@ -6,10 +6,11 @@ const description = `All ${graph.nodes.length} people, partners, projects and me
 export const metadata: Metadata = {
   title: 'Network table',
   description,
-  alternates: { canonical: '/explore/table' },
-  openGraph: { title: 'Network table', description, url: '/explore/table' },
+  alternates: { canonical: '/table' },
+  openGraph: { title: 'Network table', description, url: '/table' },
 };
 
-export default function ExploreTablePage() {
+/** The table itself is rendered by the (network) layout. */
+export default function TablePage() {
   return null;
 }

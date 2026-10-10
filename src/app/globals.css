@@ -358,6 +358,95 @@ kbd {
 .graph-node[data-dimmed='true'] {
   opacity: 0.32;
 }
+/* The path you have walked stays drawn, even while another entry is emphasised. */
+.graph-edge[data-path='true'] {
+  stroke: var(--color-ink);
+  stroke-width: 2;
+  opacity: 1;
+}
+.graph-node[data-path='true'] .focus-ring {
+  opacity: 1;
+  stroke: var(--color-ink-muted);
+  stroke-dasharray: 2 3;
+}
+.graph-node[data-path='true'] {
+  opacity: 1;
+}
+/* Zoomed far out, only emphasised entries keep a label (semantic zoom). */
+.graph-node text[data-hidden='true'] {
+  display: none;
+}
+/* The guide's first step: a slow pulse around one entry. */
+.guide-pulse {
+  fill: none;
+  stroke: var(--color-accent);
+  stroke-width: 2;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: guide-pulse 1.8s var(--ease-out) infinite;
+}
+@keyframes guide-pulse {
+  0% {
+    transform: scale(0.7);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.9);
+    opacity: 0;
+  }
+}
+
+/* ---------- Guide cards ---------- */
+.guide-card {
+  position: relative;
+}
+.guide-card[data-caret]::before {
+  content: '';
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background: var(--color-ink);
+  transform: rotate(45deg);
+}
+.guide-card[data-caret='top']::before {
+  top: -5px;
+  left: 22px;
+}
+.guide-card[data-caret='bottom']::before {
+  bottom: -5px;
+  left: 22px;
+}
+.guide-card[data-caret='top-right']::before {
+  top: -5px;
+  right: 28px;
+}
+.guide-btn {
+  display: inline-flex;
+  min-height: 2.5rem;
+  align-items: center;
+  border-radius: 999px;
+  padding: 0 0.9rem;
+  font-size: 0.9375rem;
+  font-weight: 560;
+  color: var(--color-paper);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-paper) 55%, transparent);
+  transition: background-color 160ms var(--ease-out);
+}
+.guide-btn:hover {
+  background: color-mix(in srgb, var(--color-paper) 12%, transparent);
+}
+.guide-btn-primary {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  box-shadow: none;
+}
+.guide-btn-primary:hover {
+  background: var(--color-surface);
+}
+.guide-card :focus-visible {
+  outline-color: var(--color-paper);
+  box-shadow: 0 0 0 4px var(--color-accent);
+}
 
 }
 
@@ -396,6 +485,9 @@ kbd {
 .anim-sheet {
   animation: sheet-in 240ms var(--ease-out);
 }
+.anim-guide {
+  animation: fade-in 260ms var(--ease-out);
+}
 
 dialog::backdrop {
   background: var(--color-scrim);
@@ -410,6 +502,12 @@ dialog::backdrop {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+  /* No pulse: a steady ring marks the guide's entry instead. */
+  .guide-pulse {
+    animation: none !important;
+    transform: scale(1.25);
+    opacity: 1;
   }
 }
 
@@ -428,8 +526,12 @@ dialog::backdrop {
   .type-mark {
     forced-color-adjust: none;
   }
-  .graph-node .focus-ring {
+  .graph-node .focus-ring,
+  .guide-pulse {
     stroke: Highlight;
+  }
+  .guide-card {
+    border: 2px solid CanvasText;
   }
 }
 
