@@ -1,0 +1,1034 @@
+{
+  "nodes": [
+    {
+      "type": "People",
+      "id": "P001",
+      "name": "Roger Coleman",
+      "bio": "Roger Coleman is Professor Emeritus at the Royal College of Art and a pioneer of inclusive design.",
+      "websites": [
+        "https://en.wikipedia.org/wiki/Roger_Coleman_(professor)"
+      ],
+      "slug": "roger-coleman"
+    },
+    {
+      "type": "People",
+      "id": "P002",
+      "name": "Jeremy Myerson",
+      "bio": "Jeremy Myerson is Professor Emeritus at the Royal College of Art. He has been academic, author and activist in design for more than 40 years and co-founded the Helen Hamlyn Centre for Design in 1999.",
+      "websites": [
+        "https://www.rca.ac.uk/more/staff/jeremy_myerson/"
+      ],
+      "slug": "jeremy-myerson"
+    },
+    {
+      "type": "People",
+      "id": "P003",
+      "name": "Chris McGinley",
+      "bio": "Chris McGinley is a Senior Research Fellow and Reader in Inclusive Design at the Helen Hamlyn Centre for Design, Royal College of Art. His conducts research on ageing and diversity.",
+      "websites": [
+        "https://www.rca.ac.uk/more/staff/chris-mcginley/"
+      ],
+      "connections": "Allies and Morrison; International - Design for All Europe (EIDD); GLobal Disability Innovation Hub (GDI Hub); Guinness/Vivensa; Clarion Futures; Wellcome Trust",
+      "slug": "chris-mcginley"
+    },
+    {
+      "type": "People",
+      "id": "P004",
+      "name": "Gail Ramster",
+      "bio": "Gail Ramster is a Senior Research Associate at the Helen Hamlyn Centre for Design, Royal College of Art. Her research addresses social challenges through participatory and co-design methods with citizens and communities.",
+      "websites": [
+        "https://www.rca.ac.uk/more/staff/gail-ramster/"
+      ],
+      "connections": "Essity (Tork); London Loo Alliance: made up of Age UK London, Crohns’ & Colitis UK, British Toilet Association, civic and community groups, unions, with links to London Assembly; Age UK London; University of Aberdeen Health Economics Research Unit",
+      "slug": "gail-ramster"
+    },
+    {
+      "type": "People",
+      "id": "P005",
+      "name": "Katie Gaudion",
+      "bio": "Katie Gaudion is a Senior Research Associate at the Helen Hamlyn Centre for Design, Royal College of Art. Her work celebrates neurodiversity.",
+      "websites": [
+        "https://www.rca.ac.uk/more/staff/dr-katie-gaudion/"
+      ],
+      "connections": "University of Trieste; IE University (Madrid) – MA Interior Design; Boras University; Buro Happold; Autism at Kingwood; Heart n Soul; Road Safety Foundation; Transport for London (TfL); University College London (UCL); Crown Paints",
+      "slug": "katie-gaudion"
+    },
+    {
+      "type": "People",
+      "id": "P006",
+      "name": "Ninela Ivanova",
+      "bio": "Ninela is an Innovation Fellow at the Helen Hamlyn Centre for Design, Royal College of Art. She is an interdisciplinary designer, researcher and innovation lead.",
+      "websites": [
+        "https://www.rca.ac.uk/more/staff/dr-ninela-ivanova/"
+      ],
+      "connections": "Design Management Institute; TATA Consultancy Services; Unilever; OnePlus Technologies; Adidas; Kingfisher / B&Q; Northumbrian Water Group; Lloyds Banking Group; Westminster City Council; Royal Borough of Kensington & Chelsea; Fair by Design; University of Roehampton; Winchester School of Art, Southampton University; Queen’s University Belfast; University of Bristol",
+      "slug": "ninela-ivanova"
+    },
+    {
+      "type": "People",
+      "id": "P007",
+      "name": "Melanie Flory",
+      "bio": "Melanie Flory is Associate Director (Research) at the Helen Hamlyn Centre for Design, Royal College of Art. She is a psychologist and neuroscientist whose research enquiry is at the intersection of design, systems thinking and cognitive neuroscience.",
+      "websites": [
+        "https://www.rca.ac.uk/more/staff/melanie-flory/"
+      ],
+      "connections": "Ategi; South London and Maudsley NHS Foundation Trust; University of Reading;",
+      "slug": "melanie-flory"
+    },
+    {
+      "type": "People",
+      "id": "P008",
+      "name": "Claire Craig",
+      "bio": "Claire Craig is Helen Hamlyn Co-chair of Design and Processor of Inclusive Design for Ageing. She is a qualified occupational therapist whose research and creative practice focuses on the role of design in promoting quality of life.",
+      "websites": [
+        "https://www.rca.ac.uk/more/staff/professor-claire-craig/"
+      ],
+      "slug": "claire-craig"
+    },
+    {
+      "type": "People",
+      "id": "P009",
+      "name": "Paul Chamberlain",
+      "bio": "Paul Chamberlain is Professor of Design and Co-chair of the Helen Hamlyn Centre for Design, His research explores the role of the designed environment in supporting quality of life.",
+      "websites": [
+        "https://www.rca.ac.uk/more/staff/professor-paul-chamberlain/"
+      ],
+      "slug": "paul-chamberlain"
+    },
+    {
+      "type": "People",
+      "id": "P010",
+      "name": "Hua Dong",
+      "bio": "Hua Dong is Director of Helen Hamlyn Centre for Design and Professor of Design at Royal College of Art. Her research focuses on using inclusive design to empower individuals and improve people's lives.",
+      "connections": "University of Cambridge, Brunel University of London, Loughborough University, Tongji University, Shanghai Jiaotong University, Jiangnan University, Donghua University, Southwest Jiaotong University, Hunan University, Tianjin University, Zhejiang University of Technology, University of Madcow, Mimar Sinan Fine Arts University, ISTON, WAAG, University of Limerick, Inova+, Future8, KU Leuven, Design Research Society, International Association of Societies of Design Research, Shanghai Industrial Design Association, Chinese Ergonomics Society, University for the Creative Arts, Association of British Chinese Professors, Tsinghua University, Shanghai Theatre Academy, Creative Industries Policy and Evidence Centre, Indian Institute Science Bangalore, Bosideng, Alibaba, PearsonLloyd, Design Museum of Zurich, Technische Universität Braunschweig, Universita Degli Studi Di Firenze, New Materialist, Thomas More Kempen VZW, TU Delft, SAD Mechelen, Gemeente Zoersel, Rooiljn",
+      "slug": "hua-dong"
+    },
+    {
+      "type": "Projects",
+      "id": "PR001",
+      "name": "Design Age Institute",
+      "description": "Design Age Institute is based at the Helen Hamlyn Centre for Design at the Royal College of Art, funded by Research England in 2020 as part of the UK government’s Grand Challenge on an Ageing Society. It brings together designers, businesses, researchers and communities to help address the challenges and opportunities of an ageing society. In 2023 the Transport &Mobility Pathfinder Innovation Programme was launched, with the support of UKRI’s Healthy Ageing Challenge.",
+      "budget": "£4.8M",
+      "methods": "exhibition and communication; design management; inclusive design research;",
+      "website": [
+        "https://designage.org/"
+      ],
+      "involved_institutions": "Partners included Helen Hamlyn Centre for Design at the RCA, the Design Museum, International Longevity Centre, National Innovation Centre for Ageing at Newcastle University, and Oxford Institute of Population Ageing. Funders include Research England and Innovate UK",
+      "slug": "design-age-institute"
+    },
+    {
+      "type": "Projects",
+      "id": "PR002",
+      "name": "i~design Programme",
+      "description": "The i~design programme is a ten-year research collaboration between the Helen Hamlyn Centre for Design with the Engineering Design Centre at University of Cambridge to develop a practice base and theoretical framework for Inclusive Design. It was funded by the EPSRC. The first phase of the i~design programme (2000-4) concentrated on research that provided the data required to enable Inclusive Design.The second phase of i~design (2004-7) set out to engage the business community in Inclusive Design. The third phase (2007-10) provided designers more accurate, relevant and up-to-date tools on capability in the population.",
+      "methods": "critical user focum, interview, focus groups, workshops",
+      "website": [
+        "https://impact.ref.ac.uk/casestudies/CaseStudy.aspx?Id=44131"
+      ],
+      "involved_institutions": "Helen Hamlyn Centre for Design, Cambridge Engineering Design Centre, Central St Martins College of Art and Design, the Design Council (Phase 1); Helen Hamlyn Centre for Design, Cambridge Engineering Design Centre, Centre for Usable Home Technology at the University of York, and Applied Computing at the University of Dundee (Phase 2). Cambridge Enginerring Design Centre and  Well-being Institute (Phase 3)",
+      "slug": "i-design-programme"
+    },
+    {
+      "type": "Projects",
+      "id": "PR003",
+      "name": "DOME: Design Out Medical Error",
+      "description": "The DOME project (2008-12) was funded by EPSRC. Its impact extended from the healthcare and design professions and industries to patients and their families who stand to benefit from improved healthcare processes leading to a reduced number of errors and an increase in the quality and safety of care. The DOME project served as a forerunner to the establishment of a design-led innovation centre, the HELIX Centre, set up in November 2013 by original DOME partners RCA and Imperial with a £2.8 million grant for the HEFCE Catalyst Fund.",
+      "methods": "mapping, interview, workshops",
+      "website": [
+        "https://www.rcseng.ac.uk/-/media/files/rcs/museums-and-shop/hunterian/exhibition-archive/make_it_better_lores.pdf",
+        "https://gtr.ukri.org/projects?ref=EP%2FF064802%2F1&pn=0&fetchSize=10&selectedSortableField=title&selectedSortOrder=DESC"
+      ],
+      "involved_institutions": "RCA's Helen Hamlyn Centre, St Mary's Hospital; Imperial College Business School, and the National Patient Safety Agency",
+      "slug": "dome-design-out-medical-error"
+    },
+    {
+      "type": "Projects",
+      "id": "PR004",
+      "name": "Design Bugs Out",
+      "description": "Launched in August 2008, Design Bugs Out was a design challenge run in partnership with the Department of Health and the NHS Purchasing and Supply Agency. It brought designers and manufacturers together with clinical specialists, patients and frontline staff to help combat infections by making hospital furniture and equipment easier and quicker to clean. Design Council identified 51 design opportunities with a project Expert Reference Group and Advisory Board, and shortlisted ten opportunities in two streams: five ‘quick wins’ that were developed by the Helen Hamlyn Centre at the Royal College of Art, and five were advertised via a national design competition (e.g., Brunel won two out of the five competitions and developed the commode and patient chair with PearsonLloyd and Kirton Healthcare)",
+      "legacy_impacts": "products on market, and publications",
+      "methods": "Role playing, scenario building, personas, rapid prototyping",
+      "website": [
+        "https://www.designcouncil.org.uk/our-resources/archive/reports-resources/design-bugs-out/"
+      ],
+      "involved_institutions": "Design Council, Department of Health, NHS Purchasing and Supply Agency, Helen Hamlyn Centre at Royal College of Art, Brunel University, PearsoLloyd, Kirton Healthcare etc",
+      "slug": "design-bugs-out"
+    },
+    {
+      "type": "Projects",
+      "id": "PR005",
+      "name": "Future Ambulance projects",
+      "description": "Helen Hamlyn Centre for Design has collaborated with partners on several projects to develop future ambulance. Design For Patient Safety: Future Ambulance (2005-6) was initiated by the NHS National Patient Safety Agency, to investigate how the safety of patients and ambulance staff could be improved through better design of vehicles and equipment. Smart Pods Project (2007-09, funded by EPSRC) addressed the whole system of emergency and urgent pre-hospital care. It brought together research by clinicians, designers, social scientists, ergonomists, and operations management analysts, and resulted in a range of innovative propositions that enable clinicians to take healthcare to the community and reduce patient journeys and hospital admissions. Redesign of the current A&E ambulance (2010-11) included input from patients, the public, frontline clinical staff, healthcare managers, operational managers, commissioners and purchasers in an intensive co-design and development programme to produce a redesigned A&E ambulance fit for purpose in the 21st Century.",
+      "methods": "mapping, interview, workshops, scenarios, role play",
+      "website": [
+        "https://www.rca.ac.uk/research-innovation/projects/redesigning-ambulance/",
+        "https://rca-media2.rca.ac.uk/documents/122.Redesigning_theEmergency_Ambulance.pdf"
+      ],
+      "involved_institutions": "Partners include Royal College of Art Helen Hamlyn Centre for Design and Vehicle Design Department, Imperial College Healthcare NHS Trust St Mary’s Hospital London, University of the West of England, Ambulance Service NHS Trust. Funders include NHS National Patient Safety Agency and EPSRC.",
+      "slug": "future-ambulance-projects"
+    },
+    {
+      "type": "Projects",
+      "id": "PR006",
+      "name": "Public Toilets Research Unit",
+      "description": "Two research projects - RATs and TACT3 - have engaged the views of more than 120 members of the public and providers of toilet facilities. By working with these two user groups, researchers at the HHCD have identified a shared problem that design can address, namely the management of information on service provision. The result is The Great British Public Toilet Map, a web-based resource that provides information for users and providers on publicly accessible toilets, and a spin-off company that we hope will be of benefit to the wider community.",
+      "who_involved": "People managing continence conditions, public authorities and private companies providing toilets to the public, open data providers and software developers, Ordnance Survey, local authority regeneration, community toilet and business partnership teams, Age UK London and local campaigners.",
+      "legacy_impacts": "Toilet Map (formerly Great British Public Toilet Map); Publicly Accessible Toilets: An Inclusive Design Guide; Publicly Accessible Toilets after Covid-19; Public Convenience Ltd (first RCA spin-out from staff research); Designing Inclusive Public Toilets (Book)",
+      "budget": "Mix of UKRI and public/third sector funding awards: Cross UKRI-research council funding( New Dynamics of Ageing); ESRC follow-on funding; Nominet Trust (now Social Tech Fund); Open Data Institute; Mayor of London/LEAP; RCA - AHRC Impact Acceleration Account",
+      "methods": "mapping, workshops, intevriew",
+      "website": [
+        "https://www.rca.ac.uk/research-innovation/projects/public-toilets-research-unit/"
+      ],
+      "involved_institutions": "UKRI, public authorities and private companies providing toilets to the public, open data providers and software developers, Ordnance Survey, local authority regeneration, community toilet and business partnership teams, Age UK London and local campaigners.",
+      "slug": "public-toilets-research-unit"
+    },
+    {
+      "type": "Projects",
+      "id": "PR007",
+      "name": "DBA Design Challenges",
+      "description": "Organised annually since 2000 for ten years by the Royal College of Art’s Helen Hamlyn Centre and the Design Business Association, the DBA Design Challenges invited designers to create products and services that improve the quality of life for disabled and older people. Shortlisted designers – usually six out of about 18 entries – spent a month working with a panel of disabled and elderly mentors, who tested ideas and advise designers. The outcome are often enjoyed by people of all abilities and enhances knowledge into design consultancies.",
+      "methods": "Critical user forums, rapid prototyping",
+      "website": [
+        "https://www.researchgate.net/publication/49401067_DBA_design_challenge_Engaging_design_professionals_with_inclusive_design"
+      ],
+      "involved_institutions": "Design Business Association, Helen Hamlyn Centre for design, DBA members, disabled people",
+      "slug": "dba-design-challenges"
+    },
+    {
+      "type": "Projects",
+      "id": "PR008",
+      "name": "Research Associate Programme",
+      "description": "The Helen Hamlyn Research Associates Programme addresses specific user needs related to socially inclusive design, via a programme in which new RCA graduates undertake one-year design research & development projects within the RCA studios. Research Associates are funded jointly by external partners, who set briefs and participate in projects, and by the Centre, which manages the programme. The Programme woven into the RCA's studio-based work and into the RCA's academic cycle, with a spring work-in-progress seminar and a final symposium and exhibition in the RCA galleries in the autumn. This programme allows companies to explore the benefits of an inclusive design approach through practical projects. Collaborators include B&Q, GSK, Toyota, BT, Ideal Standard, Osaka Gas, Thorn, Visteon, MFI, Philips, NHS National Patient Safety Agency, Guide Dogs, British Heart Foundation, Heathrow Airport, M&S etc.",
+      "methods": "interview, focus group, rapid prototyping, mapping, scaerios, persons, role play",
+      "website": [
+        "https://www.rca.ac.uk/research-innovation/research-centres/helen-hamlyn-centre/external-partnerships/"
+      ],
+      "involved_institutions": "RCA graduates, industrial/charity collaborators, Helen Hamlyn Centre for Design",
+      "slug": "research-associate-programme"
+    },
+    {
+      "type": "Projects",
+      "id": "PR009",
+      "name": "Our Future Foyle",
+      "description": "The Helen Hamlyn Centre for Design partnered with Public Health Agency Northern Ireland and local residents on a three-year project, aiming to create interventions, through art and leisure based activities, to increase the city of Derry-Londonderry (Northen Ireland)’s positive outlook towards the riverfront. Insights from the project lead to interventions such as the ‘Foyle Reeds’, a sculptural installation and suicide prevention measure on the Foyle Bridge, and ‘Foyle Bubbles’ a series of satellite spaces designed to house arts, commercial, educational and wellbeing initiatives along both sides of the riverfront.",
+      "methods": "focused workshops, co-design",
+      "website": [
+        "https://www.rca.ac.uk/research-innovation/projects/our-future-foyle-improving-experience-river/"
+      ],
+      "involved_institutions": "Public Health Agency Northern Ireland, Helen Hamlyn Centre for Design at the RCA, local residents",
+      "slug": "our-future-foyle"
+    },
+    {
+      "type": "Projects",
+      "id": "PR010",
+      "name": "Welcoming Workplace / Life of Work / Wellbeing & Workplace",
+      "description": "The Work & City Lab was established in HHCD in 2006 as a hub for workplace design research, bringing a novel academic perspective to understanding and supporting human interaction and experience at work. Research in the form of art and design interventions can be summarised as exploring the impact of design in four areas: influencing behaviour, enhancing experience, exploring sensation and affecting wellbeing. These human-centred perspectives present a design alternative to engineering-led efficiency in the office. The research programme has collaborated with more than 20 commercial organisations and research council funded projects, resulting in ‘3Cs’ (Concentration, Collaboration and Contemplation) office design recommendations and adoption.",
+      "legacy_impacts": "REF 2021 Impact case study: https://results2021.ref.ac.uk/impact/94500eb2-1063-4755-a82f-32cbf8788a0a?page=1",
+      "methods": "interview, mapping",
+      "website": [
+        "https://results2021.ref.ac.uk/impact/94500eb2-1063-4755-a82f-32cbf8788a0a?page=1"
+      ],
+      "involved_institutions": "Helen Hamlyn Centre for Design, office workers, businesses, research associates, UKRI.",
+      "slug": "welcoming-workplace-life-of-work-wellbeing-and-workplace"
+    },
+    {
+      "type": "Projects",
+      "id": "PR011",
+      "name": "Pioneering Architecture for Later Living Sector (PALLS)",
+      "description": "KTP - This project aimed to develop an inclusive, socially and economically sustainable Later Living housing model in town and city centre avoiding age segregation.",
+      "who_involved": "Cartwright Pickard Architects. 13 selected sites were connected with/investigated in detail",
+      "legacy_impacts": "RIBA publication being produced",
+      "budget": "£280,000",
+      "methods": "Cultural probes; expert interviews; shadowing; site visits; conference",
+      "website": [
+        "https://www.rca.ac.uk/business/case-studies/pioneering-architecture-later-life-sector/    https://www.cartwrightpickard.com/laterliving"
+      ],
+      "involved_institutions": "InnovateUK (KTP) ; Cartwright Pickad",
+      "slug": "pioneering-architecture-for-later-living-sector-palls"
+    },
+    {
+      "type": "Projects",
+      "id": "PD012",
+      "name": "Autism at Kingwood",
+      "description": "This was a pioneering,6-year partnership exploring the intersection of autism and design,  a field that was largely uncharted in 2010. Each year a new design brief was focussed; they ranged from workplace and garden design to the built environment and everyday activities.",
+      "who_involved": "Autism at Kingwood",
+      "legacy_impacts": "Six publications and a PhD dissertation. This body of research also paved the way for further projects in design and neurodivergence, in collaboration with organisations such as Paintings in Hospitals, St Andrews Healthcare, The hub, Believe in Us, Streests for Diversity ( Rees Jeffreys Road fund), Space in Mind and a scoping study for PAS 6463 ( British Standards Institution), among others.",
+      "challenges": "Mainly how to co-design with individuals with learning disabilties and limited verbal speech and the ethical consdierations of desiging with vulnerable indivduals",
+      "methods": "This is probably the HHCD’s first project exploring co-design methods with neurodivergent people who also had additional learning disabilities and limited speech. The process of designing with people for whom language isn’t the main means of communicating was fascinating. It was also a valuable opportunity to learn how to build trust and connect empathetically with individuals who experience the world very differently from the majority.",
+      "involved_institutions": "Autism at Kingood\n\nTed Powers the Monument Trust and Autism at Kingwood sponsored my PhD",
+      "slug": "autism-at-kingwood"
+    },
+    {
+      "type": "Projects",
+      "id": "PR013",
+      "name": "Heart n Soul @ The Hub",
+      "description": "Funded by Wellcome’s Hub Award to bring a group of very different people together to do research in new and exciting ways. Challenged the public by asking them some up close and personal questions about learning disability and human value. Imagined an alternative, more inclusive future.",
+      "who_involved": "Very broad reaching, but focus upon researchers; performers; artists working with or having lived expereince of neurodiversity (learning disabilities; autism; brain injury etc).",
+      "legacy_impacts": "The 'Believe In Us' proposal was developed after this project, based on the impact of inclusive design approaches",
+      "challenges": "Covid halfway through project",
+      "budget": "Full value: £1,000,000\nRCA Value: £100,000 (approx)",
+      "website": [
+        "https://heartnsoulatthehub.com/"
+      ],
+      "involved_institutions": "Heart n Soul; UAL Creative Computing Institute; CRAE/UCL",
+      "slug": "heart-n-soul-the-hub"
+    },
+    {
+      "type": "Projects",
+      "id": "PR014",
+      "name": "Believe in Us - Heart & Soul and Greenwich NHS",
+      "description": "Funded by the Health Foundation. Brought together people with learning disabilties and autistic people with health and social care professionals to explore the challenges of Heathcare services and how to make them better",
+      "challenges": "Covid beginning of project",
+      "website": [
+        "https://www.believeinus.co.uk/"
+      ],
+      "slug": "believe-in-us-heart-and-soul-and-greenwich-nhs"
+    },
+    {
+      "type": "Projects",
+      "id": "PR015",
+      "name": "Enhancing Future Community Connectivity for Ageing Well in Place: Co-designing Technology and Environments",
+      "description": "Co-design exploration of social housing and its relationship to community connectivity.  How can we design social housing that enables older adults to remain connected within their communities?",
+      "who_involved": "GH residents; policy-makers (ILC); Design Futures students at the RCA",
+      "legacy_impacts": "The Connector'",
+      "challenges": "Participant components of project carried out remotely",
+      "budget": "£281,000",
+      "methods": "cultural probes; remote co-design workshops; interviews;",
+      "website": [
+        "https://www.rca.ac.uk/research-innovation/projects/enhancing-future-community-connectivity-for-ageing-well-in-place-co-designing-technology-and-environments/",
+        "https://vivensafoundation.org.uk/news/awards-announcement-building-and-developing-suitable-living-environments-and-communities-for-an-ageing-population/"
+      ],
+      "involved_institutions": "Guinness Housing (GH); Vivensa",
+      "slug": "enhancing-future-community-connectivity-for-ageing-well-in-place-co-designing-te"
+    },
+    {
+      "type": "Projects",
+      "id": "PR016",
+      "name": "Future London Taxi",
+      "description": "This study outlined a new approach to designing an inclusive London taxi for people of all ages and abilities.",
+      "who_involved": "Taxi drivers; taxi passengers",
+      "legacy_impacts": "Information was made public, many features now exist in current Taxis. Linking back to the research may be difficult",
+      "challenges": "Change of CEO and CFO led to project abrupty stopping",
+      "budget": "£450,000 (approx) over 3 years",
+      "methods": "co-design workshops; vehicle design; full-scale prototyping; shadowing; interviews; audits",
+      "website": [
+        "https://rca-media2.rca.ac.uk/documents/Taxi_Book_lo-res.pdf"
+      ],
+      "involved_institutions": "Karsa; Hexagon; Vehicle Design Department of the RCA",
+      "slug": "future-london-taxi"
+    },
+    {
+      "type": "Projects",
+      "id": "PR017",
+      "name": "PACES",
+      "description": "The Paediatric Actigraphic Clinical Evaluation (PACES) project is exploring how wearable devices could be used to evaluate interventions for children with attention deficit hyperactivity disorder (ADHD). HHCD has pioneered a child-friendly wearable device and app, jointly designed by clinicians, researchers, designers, engineers, families and children with ADHD. This device tracks activity levels, which helps understand how medication affects ADHD symptoms, and thus improving treatment for ADHD.",
+      "who_involved": "young people with ADHD; parents; GPs; clinicians",
+      "legacy_impacts": "Being clinically  trialled",
+      "challenges": "manufacture; limited budget after 18 months; RA transfered to another insitutition",
+      "budget": "£90k (approx)",
+      "methods": "probes; co-design; product development",
+      "website": [
+        "https://www.camhsdlab.co.uk/digital-therapeutics-assessment"
+      ],
+      "involved_institutions": "KCL/CAMHS",
+      "slug": "paces"
+    },
+    {
+      "type": "Partners",
+      "id": "I001",
+      "name": "Royal College of Art",
+      "bio": "Founded in 1837, the Royal College of Art is the world’s largest postgraduate-only community of art and design students. It has been ranked number one in the world for 11 consecutive years (QS World University Rankings by Subject 2015-2025). With more than 30,000 RCA alumni all over the world, the College’s graduates form a diverse international network of artists, designers, creators and innovators.The College creates an environment that champions exploration, collaboration and interdisciplinary learning and research - using art and design to reframe the possibilities of the humanities, technology, and ethics; and equipping graduates for new futures and opportunities. The Helen Hamlyn Centre for Design is the longest-running centre for design research at the RCA, focusing on research and innovation that use inclusive design to improve people's lives.\n\nWith more than 30,000 RCA alumni all over the world, the College’s graduates form a diverse international network of artists, designers, creators and innovators.\n\nThe College creates an environment that champions exploration, collaboration and interdisciplinary learning and research - using art and design to reframe the possibilities of the humanities, technology, and ethics; and equipping graduates for new futures and opportunities.",
+      "websites": [
+        "https://www.rca.ac.uk/"
+      ],
+      "slug": "royal-college-of-art"
+    },
+    {
+      "type": "Partners",
+      "id": "I002",
+      "name": "University of Cambridge",
+      "bio": "The University of Cambridge is a public collegiate research university in Cambridge, England. Founded in 1209, the University of Cambridge is the world's third-oldest university in continuous operation. The Cambridge Engineering Design Centre (EDC) is part of the Department of Engineering. For more than twenty-five years it has undertaken fundamental and applied research to generate knowledge that improves the design process. The work at Cambridge EDC is driven both by intellectual curiosity and industrial collaboration, resulting in understanding, methods and tools that shape design theory and design practice.",
+      "websites": [
+        "https://www-edc.eng.cam.ac.uk/"
+      ],
+      "slug": "university-of-cambridge"
+    },
+    {
+      "type": "Partners",
+      "id": "I003",
+      "name": "University of Oxford",
+      "bio": "The University of Oxford is a collegiate research university in Oxford, England. There is evidence of teaching as early as 1096, making it the oldest university in the English-speaking world and the world's second-oldest university in continuous operation. The Oxford Institute of Population Ageing achieved Institute status in 2001. The institute undertakes research into the implications of population change. As a multi-disciplinary group, its researchers work in Africa, Latin America, Asia and Europe, and run the Population Networks AFRAN (Africa) LARNA (Latin America) EAST (Central and Eastern Europe).",
+      "websites": [
+        "https://www.ageing.ox.ac.uk/"
+      ],
+      "slug": "university-of-oxford"
+    },
+    {
+      "type": "Partners",
+      "id": "I004",
+      "name": "University College London",
+      "bio": "University College London (UCL) is a public research university in London, England. It is a member institution of the federal University of London, and is the second-largest university in the United Kingdom by total enrolment and the largest by postgraduate enrolment. The Global Disability Innovation Hub (GDI) is a research and practice centre driving disability innovation for a fairer world. Operational in over 60 countries, GDI Hub works with more than 70 partners through its AT2030 programme, delivering projects across a portfolio of £50m. GDI Hub has reached 64 million people since its launch in 2016 by developing bold approaches, building innovative partnerships, and creating ecosystems to accelerate change.",
+      "websites": [
+        "https://www.disabilityinnovation.com/"
+      ],
+      "slug": "university-college-london"
+    },
+    {
+      "type": "Partners",
+      "id": "I005",
+      "name": "Imperial College London",
+      "bio": "The Imperial College of Science, Technology and Medicine, known by its trade names Imperial College London and Imperial, is a public research university in London, England. The Helix Centre is a research lab for design and health co-founded by Imperial College London and the Royal College of Art, with a multi-disciplinary team of designers, behavioural scientists, technologists, clinical experts, and public involvement professionals. Uniquely located at St Mary's Hospital in London, the Helix Centre has strong relationships with staff, patients and diverse communities to ensure a people-centred approach for multi-year, cutting-edge scientific research programmes and shorter-term project work for healthcare organisations.",
+      "websites": [
+        "https://helixcentre.com/"
+      ],
+      "slug": "imperial-college-london"
+    },
+    {
+      "type": "Partners",
+      "id": "I006",
+      "name": "Design Business Association",
+      "bio": "Founded in 1986, the Design Business Association is the trade association for all those working in the field of design, supporting them and championing the transformative power of design. The DBA membership consists of over 350 design consultancies and design-driven businesses. DBA enables the full commercial, strategic and economic potential of design to be realised throughout business and government.",
+      "websites": [
+        "https://www.dba.org.uk/"
+      ],
+      "slug": "design-business-association"
+    },
+    {
+      "type": "Partners",
+      "id": "I007",
+      "name": "Design Museum",
+      "bio": "Located in London, the world's leading museum devoted to contemporary design in every form. The Design Museum is a multifaceted museum, an ever-changing space for the public, industry and education to come together and explore new ideas.",
+      "websites": [
+        "https://designmuseum.org/"
+      ],
+      "slug": "design-museum"
+    },
+    {
+      "type": "Partners",
+      "id": "I008",
+      "name": "SALUS",
+      "bio": "SALUS is the knowledge community dedicated to designing a healthier society and a more sustainable planet. Its mission is to create, share and disseminate knowledge concerning the relationship between human health and the natural, built and social environment with a focus on the intersection of science & technology, architecture, lifestyle, urbanism, and sustainable development (SALUS).SALUS aims to support the UN's Sustainable Development Goals and the Paris Agreement's global climate goals by building interdisciplinary professional communities and networks that will facilitate knowledge-led collaborations through a range of media, publishing, research, events and training activities that promote the application and interaction of art, science, culture and innovation.",
+      "websites": [
+        "https://www.salus.global/"
+      ],
+      "slug": "salus"
+    },
+    {
+      "type": "Partners",
+      "id": "I009",
+      "name": "Institute of Human-Centred Design",
+      "bio": "The Institute for Human Centered Design, formerly known as Adaptive Environments (AE), was founded in 1978 by Elaine Ostroff and Cora Beth Able. In earlier years, it had a focus on helping families and communities solve practical problems of the design of places. It engaged designers in the work and taught design students the power of design to shape social equity. Since 1996, IHCD has been home to the New England ADA Center, one of 10 regional ADA Centers comprising the ADA National Network which provided information, guidance and training on the Americans with Disabilities Act (ADA).IHCD provides education and consultation about best practices that go beyond legal requirements to design places, things, communication and policy that promote design that works for everyone across the spectrum of ability and age and enhances human experience.",
+      "websites": [
+        "https://humancentereddesign.org/"
+      ],
+      "slug": "institute-of-human-centred-design"
+    },
+    {
+      "type": "Methods",
+      "id": "M001",
+      "name": "Critical User Forums",
+      "description": "Workshops, forums and design session involving direct interaction between design teams and a mixed group of users with severe disabilities. Typical forums consist of roughly 4 - 7 people with different disabilities. Over the course of the session a range of scenarios are explored to assist with the design and development of the artwork, product and/or output.",
+      "steps": "1. Recognise exclusion (who are excluded, and why)\n2. Identify critical users you intend to reach to gain insights for inclusion and innovation\n3. Hosting a forum with key critical users. In these sessions you'll co-create solutions to improve inclusivity (e.g. a participatory process, and a more inclusive intervention)\n4. Reflection  (e.g. on the early decision, the process, and the outcome, what can be learned, and what can be improved)\n5. Revise, re-engage, and re-centre those previously excluded.",
+      "challenges": "Difficulties in identifying critical users\nLack of time and space given to reflection",
+      "conditions": "Understanding of who 'critical users' might be and how best to work with them.",
+      "publications": "Dong, H., & Cassim, J. (2007). Critical User Forums for Inclusive Design. Ergonomics in Design, 15(4), 4-30. https://journals.sagepub.com/doi/abs/10.1518/106480407X255233",
+      "category": "Inclusive Design",
+      "slug": "critical-user-forums"
+    },
+    {
+      "type": "Methods",
+      "id": "M002",
+      "name": "Cultural Probes",
+      "description": "The cultural probes are tailored packages of maps, postcards, cameras (they are increasingly replaced by smart phones) and other items given to users in local or remote test sites for their responses. Researchers purposefully left their requests vague, ambiguous, and even absurd in order to evoke free and imaginative responses from the participants. The probes are used to pursue a design approach seeking inspiration, and they can also be designed for data collection. The cultural probe packages are often designed with openness and aesthetics. When the packs are returned by the participants, researchers tent to use them continuously as living reminders of the sites, with individual items spurring-on or serving as resources for their design. Cultural probes can provide rich inspirational materials, when combined with interviews, they spark intense conversation/dialogue with the participants.",
+      "publications": "https://www.interaction-design.org/literature/topics/cultural-probes?srsltid=AfmBOooVErOnLiqTsIHXloVenqKERUbByEp_27rb4w_6qtDcgviCTyDI",
+      "slug": "cultural-probes"
+    },
+    {
+      "type": "Methods",
+      "id": "M003",
+      "name": "Personas",
+      "description": "Personas are user profiles based on research; they provide a synthetic, schematic description of users as the potential recipients of new design concepts. Personas are based on raw data collected from research, but it is not a description of an actual real user. Instead it is the construction of an “ideal typical” profile that clusters meaningful characteristics of people as described by the raw data. To inspire designers, personas must contain subtle information about people’s behaviour and attitudes. More than just a list of functional characteristics of a person (his or her abilities or disabilities), personas should describe people’s value and attitudes, their psychological profile, their domestic environment, their lifestyle, and so on. The profile may also contain description of relations with others, such as a family, colleagues and friends. Often, several personas are created for the development team to consider.",
+      "slug": "personas"
+    },
+    {
+      "type": "Methods",
+      "id": "M004",
+      "name": "Scenarios",
+      "description": "Scenarios can be used to describe current or future use contexts. Scenarios illustrate stories that put the people who use or will use products and services in different contexts. Typically, scenarios are founded on observation; they bind the personal, social and technological aspects of product and service use, thus helping prevent professionals making assumptions based on their own, limited experience. Because most products and services have different kinds of users, each with their own concerns, three or four different scenarios constructed around different characters are often needed to cover the scope of product or service interactions. Scenarios may be presented as texts, storyboards, videos, plays etc. Beyond the design team, scenarios help communicate design concepts and user issues among teams of professionals from different disciplines. Scenarios can be used to communicate concepts either within an organisation or for evaluation with potential users.",
+      "slug": "scenarios"
+    },
+    {
+      "type": "Methods",
+      "id": "M005",
+      "name": "Workshops",
+      "description": "Workshops are flexible collaborative sessions (can be organised in person or online), often between 2 hours to 2 days, using various tools (e.g., visual materials, worksheets, miro boards) to engage stakeholders, explore ideas, make decisions, or tackle specific issues/gather insights. Planning and facilitation are important.",
+      "slug": "workshops"
+    },
+    {
+      "type": "Methods",
+      "id": "M006",
+      "name": "Role Playing",
+      "description": "To experience difficulties or problems faced by certain user groups, developers may role play those users. Also known as simulation, empathic research or empathetic experience, this form of first-person experience and data gathering allows the developers to understand not just the physical use of products and spaces, but how the individual feels emotionally and socially in situations and tasks.",
+      "slug": "role-playing"
+    },
+    {
+      "type": "Methods",
+      "id": "M007",
+      "name": "Mapping",
+      "description": "Mapping is a method using (often visual) diagrams (e.g. concept mapping, mind mapping) to organise, structure, and understand complex information, often starting with a central idea and branching out with related keywords, images, and colours to reveal connections/relationships, aid problem-solving or facilitate learning.",
+      "slug": "mapping"
+    },
+    {
+      "type": "Methods",
+      "id": "M008",
+      "name": "Individual interviews",
+      "description": "One-to-one interviews provide information about individual actions and motivations that cannot be obtained in group discussions. An individual interview is a conversation between a researcher and a respondent selected according to agreed criteria of age, lifestyle, etc. It typically lasts an hour or two (make sure breaks are allowed when needed) and may take place in any agreed setting. Walking interviews are increasingly becoming popular. Individual interviews are an important complement to focus groups. Individual interviews are particularly suitable for discussing: sensitive issues such as redundancy or medical problems and cases where individuality is of prime importance, such as financial services. They are to be preferred in cases where the “memory amalgam” that emerges from group discussions would provide information that is less “real” than individual accounts. A case in point is where one wishes to reconstruct a user’s or purchaser’s decision-making process. They are also good with “difficult” interviewees, whether because they are widely geographically spread or because they are strongly opinionated. The interviewer must be skilled and sensitive. Social and listening skills, awareness of body language, self-awareness of the interviewer’s own prejudices, and knowing when and how to draw out or challenge the interviewee are all important.",
+      "slug": "individual-interviews"
+    },
+    {
+      "type": "Methods",
+      "id": "M009",
+      "name": "Mockups and Rapid Prototyping",
+      "description": "This is a way of making realistic models/mock-ups/rigs/prototypes of product concepts quickly so that can be tested by the team, clients, and users. Rapid prototyping provides a convincing and tangible idea of what a final product could look and feel like. Models can be used for limited physical testing and to gain users’ impressions. Developers can refine models progressively based on user feedback from the previous model to reach an optimum design. 3D printing can be used but cardboard and other readily available materials are equally effective. The ability to make many and varied models makes it profitable to involve users more closely and earlier during product development: the users give more useful reactions to a physical representation of a potential product than to designers’ questions or sketches. It may, however, be necessary to take steps to counter people’s tendency to regard a solid object, far more than a sketch on paper, as something they cannot change, so rough mock-ups rather than refined porotypes can be helpful in early stages.",
+      "slug": "mockups-and-rapid-prototyping"
+    },
+    {
+      "type": "Methods",
+      "id": "M010",
+      "name": "Focus Groups",
+      "description": "Focus groups are used to gather raw data from people to identify user needs in the concept development phase. They can also be used for clarifying particular issues during a design phase and as an evaluation method. The result is usually a list of agreed (and disagreed) statements. With help of a good moderator, a discussion can reveal not only explicit but also implicit needs and reactions. This method is often recommended as a complementary one to interviews and observation. Some key issues for a successful meeting are carefully selecting and preparing participants, good preparation for the meeting, creating a democratic, supportive and informal atmosphere (e.g., refreshments are often provided), and skilful moderation of the discussion. Attention must be paid also to the individual needs of different users considering, for example, their diet and accessibility needs. Research suggests that groups of six to eight people are likely to raise most of the important issues between them, but sometimes larger numbers of participants representing different viewpoints can be fruitful, depending on the issue at hand. It may be desirable to include “critical users” representing the extremes of the user group to ensure inclusive design. Designers often use visual materials and physical models in group sessions, turning them into an interactive workshop.",
+      "slug": "focus-groups"
+    },
+    {
+      "type": "Methods",
+      "id": "M011",
+      "name": "Observation",
+      "description": "Observation is a common method used by design researchers, through by watching and recording behaviours, sites/events, or phenomena in their natural or controlled settings, providing insights into what people do, not just what they say they do. It is used in both qualitative (in-depth understanding) and quantitative (frequency counts) studies, and includes types like naturalistic (e.g. Fly on the wall), participant, and controlled observation, allowing researchers to gain real-world data.",
+      "slug": "observation"
+    },
+    {
+      "type": "Methods",
+      "id": "M012",
+      "name": "Co-design",
+      "description": "Co-design is a collaborative, participatory method where diverse stakeholders (e.g., end-users with lived experience), work together as equal partners to share experience and insights, sharing decision-making, and creating solutions. It is more than consultation, involving deep engagement in inquiry, ideation, prototyping, and implementation, using tools like visual materials (e.g. cards), workshops and journey mapping to foster shared understanding and co-ownership. Effective co-design materials help facilitate effective interaction with the participants.",
+      "slug": "co-design"
+    }
+  ],
+  "links": [
+    {
+      "source": "I001",
+      "target": "P001",
+      "strength": 1
+    },
+    {
+      "source": "I001",
+      "target": "P002",
+      "strength": 1
+    },
+    {
+      "source": "I001",
+      "target": "P003",
+      "strength": 1
+    },
+    {
+      "source": "I001",
+      "target": "P004",
+      "strength": 1
+    },
+    {
+      "source": "I001",
+      "target": "P005",
+      "strength": 1
+    },
+    {
+      "source": "I001",
+      "target": "P006",
+      "strength": 1
+    },
+    {
+      "source": "I001",
+      "target": "P007",
+      "strength": 1
+    },
+    {
+      "source": "I001",
+      "target": "P008",
+      "strength": 1
+    },
+    {
+      "source": "I001",
+      "target": "P009",
+      "strength": 1
+    },
+    {
+      "source": "I001",
+      "target": "P010",
+      "strength": 1
+    },
+    {
+      "source": "I002",
+      "target": "P001",
+      "strength": 1
+    },
+    {
+      "source": "I002",
+      "target": "P009",
+      "strength": 1
+    },
+    {
+      "source": "I002",
+      "target": "P010",
+      "strength": 1
+    },
+    {
+      "source": "I003",
+      "target": "P002",
+      "strength": 1
+    },
+    {
+      "source": "I003",
+      "target": "P008",
+      "strength": 1
+    },
+    {
+      "source": "I004",
+      "target": "P003",
+      "strength": 1
+    },
+    {
+      "source": "I004",
+      "target": "P005",
+      "strength": 1
+    },
+    {
+      "source": "I004",
+      "target": "P010",
+      "strength": 1
+    },
+    {
+      "source": "I005",
+      "target": "P002",
+      "strength": 1
+    },
+    {
+      "source": "I005",
+      "target": "P004",
+      "strength": 1
+    },
+    {
+      "source": "I005",
+      "target": "P007",
+      "strength": 1
+    },
+    {
+      "source": "I005",
+      "target": "P008",
+      "strength": 1
+    },
+    {
+      "source": "I005",
+      "target": "P009",
+      "strength": 1
+    },
+    {
+      "source": "I005",
+      "target": "P010",
+      "strength": 1
+    },
+    {
+      "source": "I006",
+      "target": "P001",
+      "strength": 1
+    },
+    {
+      "source": "I006",
+      "target": "P002",
+      "strength": 1
+    },
+    {
+      "source": "I006",
+      "target": "P010",
+      "strength": 1
+    },
+    {
+      "source": "I007",
+      "target": "P002",
+      "strength": 1
+    },
+    {
+      "source": "I007",
+      "target": "P010",
+      "strength": 1
+    },
+    {
+      "source": "I008",
+      "target": "P002",
+      "strength": 1
+    },
+    {
+      "source": "I008",
+      "target": "P003",
+      "strength": 1
+    },
+    {
+      "source": "I008",
+      "target": "P008",
+      "strength": 1
+    },
+    {
+      "source": "I008",
+      "target": "P009",
+      "strength": 1
+    },
+    {
+      "source": "I008",
+      "target": "P010",
+      "strength": 1
+    },
+    {
+      "source": "I009",
+      "target": "P001",
+      "strength": 1
+    },
+    {
+      "source": "I009",
+      "target": "P010",
+      "strength": 1
+    },
+    {
+      "source": "P001",
+      "target": "PR002",
+      "strength": 1
+    },
+    {
+      "source": "P001",
+      "target": "PR003",
+      "strength": 1
+    },
+    {
+      "source": "P001",
+      "target": "PR005",
+      "strength": 1
+    },
+    {
+      "source": "P001",
+      "target": "PR007",
+      "strength": 1
+    },
+    {
+      "source": "P001",
+      "target": "PR008",
+      "strength": 1
+    },
+    {
+      "source": "P002",
+      "target": "PR001",
+      "strength": 1
+    },
+    {
+      "source": "P002",
+      "target": "PR004",
+      "strength": 1
+    },
+    {
+      "source": "P002",
+      "target": "PR005",
+      "strength": 1
+    },
+    {
+      "source": "P002",
+      "target": "PR007",
+      "strength": 1
+    },
+    {
+      "source": "P002",
+      "target": "PR008",
+      "strength": 1
+    },
+    {
+      "source": "P002",
+      "target": "PR009",
+      "strength": 1
+    },
+    {
+      "source": "P002",
+      "target": "PR010",
+      "strength": 1
+    },
+    {
+      "source": "P003",
+      "target": "PR001",
+      "strength": 1
+    },
+    {
+      "source": "P003",
+      "target": "PR004",
+      "strength": 1
+    },
+    {
+      "source": "P003",
+      "target": "PR008",
+      "strength": 1
+    },
+    {
+      "source": "P003",
+      "target": "PR011",
+      "strength": 1
+    },
+    {
+      "source": "P003",
+      "target": "PR015",
+      "strength": 1
+    },
+    {
+      "source": "P003",
+      "target": "PR016",
+      "strength": 1
+    },
+    {
+      "source": "P003",
+      "target": "PR017",
+      "strength": 1
+    },
+    {
+      "source": "P004",
+      "target": "PR006",
+      "strength": 1
+    },
+    {
+      "source": "P004",
+      "target": "PR008",
+      "strength": 1
+    },
+    {
+      "source": "P005",
+      "target": "PD012",
+      "strength": 1
+    },
+    {
+      "source": "P005",
+      "target": "PR008",
+      "strength": 1
+    },
+    {
+      "source": "P005",
+      "target": "PR013",
+      "strength": 1
+    },
+    {
+      "source": "P005",
+      "target": "PR014",
+      "strength": 1
+    },
+    {
+      "source": "P005",
+      "target": "PR017",
+      "strength": 1
+    },
+    {
+      "source": "P006",
+      "target": "PR008",
+      "strength": 1
+    },
+    {
+      "source": "P009",
+      "target": "PR008",
+      "strength": 1
+    },
+    {
+      "source": "P010",
+      "target": "PR002",
+      "strength": 1
+    },
+    {
+      "source": "P010",
+      "target": "PR004",
+      "strength": 1
+    },
+    {
+      "source": "P010",
+      "target": "PR007",
+      "strength": 1
+    },
+    {
+      "source": "P010",
+      "target": "PR008",
+      "strength": 1
+    },
+    {
+      "source": "PR001",
+      "target": "M005",
+      "strength": 1
+    },
+    {
+      "source": "PR001",
+      "target": "M009",
+      "strength": 1
+    },
+    {
+      "source": "PR002",
+      "target": "M001",
+      "strength": 1
+    },
+    {
+      "source": "PR004",
+      "target": "M003",
+      "strength": 1
+    },
+    {
+      "source": "PR004",
+      "target": "M004",
+      "strength": 1
+    },
+    {
+      "source": "PR004",
+      "target": "M006",
+      "strength": 1
+    },
+    {
+      "source": "PR004",
+      "target": "M009",
+      "strength": 1
+    },
+    {
+      "source": "PR005",
+      "target": "M005",
+      "strength": 1
+    },
+    {
+      "source": "PR005",
+      "target": "M006",
+      "strength": 1
+    },
+    {
+      "source": "PR005",
+      "target": "M008",
+      "strength": 1
+    },
+    {
+      "source": "PR005",
+      "target": "M010",
+      "strength": 1
+    },
+    {
+      "source": "PR006",
+      "target": "M005",
+      "strength": 1
+    },
+    {
+      "source": "PR006",
+      "target": "M007",
+      "strength": 1
+    },
+    {
+      "source": "PR006",
+      "target": "M008",
+      "strength": 1
+    },
+    {
+      "source": "PR007",
+      "target": "M001",
+      "strength": 1
+    },
+    {
+      "source": "PR007",
+      "target": "M010",
+      "strength": 1
+    },
+    {
+      "source": "PR008",
+      "target": "M001",
+      "strength": 1
+    },
+    {
+      "source": "PR008",
+      "target": "M003",
+      "strength": 1
+    },
+    {
+      "source": "PR008",
+      "target": "M005",
+      "strength": 1
+    },
+    {
+      "source": "PR008",
+      "target": "M008",
+      "strength": 1
+    },
+    {
+      "source": "PR008",
+      "target": "M011",
+      "strength": 1
+    },
+    {
+      "source": "PR009",
+      "target": "M012",
+      "strength": 1
+    },
+    {
+      "source": "PR010",
+      "target": "M007",
+      "strength": 1
+    },
+    {
+      "source": "PR010",
+      "target": "M008",
+      "strength": 1
+    },
+    {
+      "source": "PR011",
+      "target": "M008",
+      "strength": 1
+    },
+    {
+      "source": "PR013",
+      "target": "M005",
+      "strength": 1
+    },
+    {
+      "source": "PR014",
+      "target": "M005",
+      "strength": 1
+    },
+    {
+      "source": "PR014",
+      "target": "M011",
+      "strength": 1
+    },
+    {
+      "source": "PR014",
+      "target": "M012",
+      "strength": 1
+    },
+    {
+      "source": "PR015",
+      "target": "M002",
+      "strength": 1
+    },
+    {
+      "source": "PR015",
+      "target": "M008",
+      "strength": 1
+    },
+    {
+      "source": "PR016",
+      "target": "M008",
+      "strength": 1
+    },
+    {
+      "source": "PR016",
+      "target": "M012",
+      "strength": 1
+    },
+    {
+      "source": "PR017",
+      "target": "M002",
+      "strength": 1
+    },
+    {
+      "source": "PR017",
+      "target": "M012",
+      "strength": 1
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "generated_at": "2026-10-09T23:31:22.802Z",
+  "counts": {
+    "PEOPLE.csv": {
+      "total": 10,
+      "parsed": 10,
+      "skipped": 0
+    },
+    "PROJECTS.csv": {
+      "total": 17,
+      "parsed": 17,
+      "skipped": 0
+    },
+    "PARTNERS.csv": {
+      "total": 9,
+      "parsed": 9,
+      "skipped": 0
+    },
+    "METHODS.csv": {
+      "total": 12,
+      "parsed": 12,
+      "skipped": 0
+    }
+  },
+  "skipped_rows": [],
+  "duplicate_ids": [],
+  "missing_required_fields": [],
+  "placeholder_values": [
+    {
+      "id": "M001",
+      "field": "templates",
+      "value": "/"
+    }
+  ],
+  "dangling_links": [
+    {
+      "row": 70,
+      "source": "PR012",
+      "target": "M005",
+      "missing": [
+        "PR012"
+      ]
+    }
+  ],
+  "link_type_mismatches": [],
+  "duplicate_links": [],
+  "unconnected_nodes": [],
+  "slug_collisions": []
+}
