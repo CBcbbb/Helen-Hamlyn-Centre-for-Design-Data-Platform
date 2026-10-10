@@ -22,9 +22,9 @@ test.describe('without JavaScript', () => {
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', /\/methods\/critical-user-forums$/);
   });
 
-  test('table view lists every entity as a link', async ({ page }) => {
+  test('table view lists every entity as a link in one table', async ({ page }) => {
     await page.goto('/table');
-    await expect(page.locator('table')).toHaveCount(4);
+    await expect(page.locator('table')).toHaveCount(1);
     await expect(page.locator('tbody tr')).toHaveCount(48);
   });
 });
@@ -169,11 +169,23 @@ test('narrow screen: details open as a sheet over the map, which stays usable', 
   await expect(sheet).toHaveCount(0);
 });
 
+test('narrow screen: the legend and filters fold away behind a button', async ({ page, isMobile }) => {
+  test.skip(!isMobile, 'Mobile layout');
+  await page.goto('/');
+  await page.waitForLoadState('networkidle');
+  const button = page.getByRole('button', { name: 'Filters' });
+  await expect(button).toHaveAttribute('aria-expanded', 'false');
+  await expect(page.getByRole('checkbox', { name: /Partners/ })).toBeHidden();
+  await button.click();
+  await page.getByRole('checkbox', { name: /Partners/ }).uncheck();
+  await expect(page.getByRole('status')).toHaveText(/Partners hidden/);
+});
+
 test('touch targets on the map controls are at least 40px', async ({ page, isMobile }) => {
   test.skip(!isMobile, 'Mobile layout');
   await page.goto('/');
   await page.waitForLoadState('networkidle');
-  for (const name of ['Zoom in', 'Zoom out', 'Fit the whole map', 'Show the guide']) {
+  for (const name of ['Zoom in', 'Zoom out', 'Fit the whole map', 'Show the guide', 'Filters']) {
     const box = await page.getByRole('button', { name }).boundingBox();
     expect(box!.width, name).toBeGreaterThanOrEqual(40);
     expect(box!.height, name).toBeGreaterThanOrEqual(40);

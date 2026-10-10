@@ -19,6 +19,8 @@ for (const route of ROUTES) {
   test(`no axe violations on ${route}`, async ({ page }) => {
     await page.goto(route);
     await page.waitForLoadState('networkidle');
+    // Let entrance fades finish: axe measures colours as they are on screen.
+    await page.waitForTimeout(500);
     const results = await new AxeBuilder({ page }).withTags(TAGS).analyze();
     const summary = results.violations.map(
       (v) => `${v.id} (${v.impact}): ${v.help}\n  ${v.nodes.map((n) => n.target.join(' ')).slice(0, 5).join('\n  ')}`,

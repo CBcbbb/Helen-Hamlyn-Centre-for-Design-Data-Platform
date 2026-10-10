@@ -15,7 +15,7 @@ const LINKS = [
 export function NavLinks() {
   const pathname = usePathname() ?? '/';
   return (
-    <nav aria-label="Main" className="-mx-4 overflow-x-auto px-2 [scrollbar-width:none] md:mx-0 md:overflow-visible md:px-0 [&::-webkit-scrollbar]:hidden">
+    <nav aria-label="Main" className="overflow-x-auto [scrollbar-width:none] md:overflow-visible [&::-webkit-scrollbar]:hidden">
       <ul className="flex items-center whitespace-nowrap text-[0.875rem] sm:text-[0.9375rem] md:-mx-2 md:gap-x-1">
         {LINKS.map(({ href, label }) => {
           const current =

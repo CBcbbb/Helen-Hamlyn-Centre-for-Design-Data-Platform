@@ -39,6 +39,14 @@ export interface ExplorerState {
   /** The project the guide starts from. */
   guideStartId: string;
   announce: (message: string) => void;
+  /** Type filters and the status line, shown in the map's legend or above the table. */
+  filters: {
+    totals: Record<NodeType, number>;
+    toggleType: (type: NodeType) => void;
+    statusText: string;
+    wide: boolean;
+    mounted: boolean;
+  };
 }
 
 export const ExplorerContext = createContext<ExplorerState | null>(null);

@@ -230,13 +230,20 @@ describe('NetworkExplorer', () => {
     expect(document.activeElement?.getAttribute('aria-label')).toMatch(/project/);
   });
 
-  it('table view: one table per type with captions and row headers', () => {
+  it('table view: one table of every entry, with row headers, sortable by type or name', async () => {
+    const user = userEvent.setup();
     nav.pathname = '/table';
     render(<NetworkExplorer data={graph} />);
-    const tables = screen.getAllByRole('table');
-    expect(tables).toHaveLength(4);
-    expect(within(tables[0]).getAllByRole('rowheader')).toHaveLength(17);
-    expect(tables[0]).toHaveAccessibleName(/Projects/);
+    const table = screen.getByRole('table');
+    expect(screen.getAllByRole('table')).toHaveLength(1);
+    expect(within(table).getAllByRole('rowheader')).toHaveLength(48);
+    expect(within(table).getByRole('columnheader', { name: /Type/ })).toHaveAttribute('aria-sort', 'ascending');
+    await user.click(within(table).getByRole('button', { name: /Name/ }));
+    expect(within(table).getByRole('columnheader', { name: /Name/ })).toHaveAttribute('aria-sort', 'ascending');
+    const first = within(table).getAllByRole('rowheader')[0].textContent!;
+    const second = within(table).getAllByRole('rowheader')[1].textContent!;
+    expect(first.localeCompare(second, 'en', { sensitivity: 'base' })).toBeLessThanOrEqual(0);
+    expect(screen.getByRole('status')).toHaveTextContent('Sorted by name.');
   });
 
   it('Ctrl/Cmd+E switches view and announces it', async () => {

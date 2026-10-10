@@ -16,6 +16,9 @@ Added on 10 October 2026, after reviewing the rebuild against the original platf
 | Entry size grew with the number of connections | Every entry is the same size |
 | Mobile details: a full-screen dialog that hid the map | A sheet over the lower part of the map; the entry is panned into view above it, and the map stays usable |
 | `PR012`/`PD012` mismatch reported, link dropped | Fixed in `data/PROJECTS.csv` and `data/LINKS.csv`: 104 connections |
+| Small grey labels beside the marks, straight hairline edges | The original's look: each name bold, in its type's colour (the darker text-safe variant), centred under its shape and wrapped onto up to three lines; edges are soft arcs. A final sweep in the layout guarantees no two labels overlap |
+| Header, toolbar, filter row and status row stacked above the map (about 260px) | A 64px header and one 56px toolbar row. The filters became the map's legend, in a panel at the top left as in the original, with the entry count and how-to hints |
+| The table: one table per type | One table of every entry: name, type and summary, sortable by type or name (`aria-sort`) |
 
 **The guide.** On a first visit, one project (Design Bugs Out) pulses on the map, with a card beside it. Four cards follow what you do: open it; follow a connection (its connections are highlighted on the map and listed in the panel); step back along your path; try the other arrangement. Each card waits for the action it describes, never takes focus or blocks the page, sits in the reading order just before what it points at, and can be skipped. Finishing or skipping is remembered in the browser; the guide button in the map controls, or `/?guide`, starts it again. Arriving from an entity page's "See it in the network map" link skips it.
 

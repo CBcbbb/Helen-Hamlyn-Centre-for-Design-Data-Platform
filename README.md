@@ -12,9 +12,9 @@ This repository is a rebuild of the [original platform](https://github.com/CBcbb
 
 ## What is on the site
 
-- **The map (`/`)** is the home page: every entry and connection as a rhizomatic constellation, with no hierarchy and every entry the same size. One control rearranges the same entries into four columns by type, and back, with an animated move. Search, type filters, a details panel, a path of the entries you have opened, and keyboard shortcuts.
+- **The map (`/`)** is the home page: every entry and connection as a rhizomatic constellation, with no hierarchy and every entry the same size. As in the original platform, each name is drawn bold in its type's colour, now under a small shape for its type, and connections are soft arcs. One control rearranges the same entries into four columns by type, and back, with an animated move. A legend at the top left doubles as the type filters (behind a Filters button on narrow screens). Search, a details panel, a path of the entries you have opened, and keyboard shortcuts.
 - **A first-visit guide** inside the map: one project pulses, and four short cards follow what you do (open it, follow a connection, step back along your path, try the other arrangement). Skippable, remembered in the browser, and restartable from the map's controls or `/?guide`.
-- **The table (`/table`)**: the same data as one accessible table per type, sharing search, filters and details with the map.
+- **The table (`/table`)**: every entry in one table (name, type, summary), sortable by type or name, sharing search, filters and details with the map.
 - **Entity pages** (`/projects/[slug]`, `/methods/[slug]`, `/people/[slug]`, `/partners/[slug]`): one static page for each of the 48 entries, with its connections listed as links.
 - **Index pages** (`/projects`, `/methods`, `/people`, `/partners`) with a short summary of each entry.
 - **About (`/about`)**: what the platform is, how to use it, accessibility and translation help.

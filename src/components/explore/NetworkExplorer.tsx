@@ -5,7 +5,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { GraphData, GraphNode, NodeType } from '@/lib/types';
 import { NODE_TYPES } from '@/lib/types';
-import { BROWSE_ORDER, TYPE_META } from '@/lib/types-meta';
+import { TYPE_META } from '@/lib/types-meta';
 import { countByType, indexGraph, searchNodes } from '@/lib/graph';
 import { computeLayout, type Arrangement, type Layout } from '@/lib/layout';
 import { FEATURED_PROJECT_ID } from '@/lib/data';
@@ -232,6 +232,13 @@ export function NetworkExplorer({ data, layout: givenLayout }: { data: GraphData
     return () => document.removeEventListener('keydown', onKey);
   }, [switchView, view]);
 
+  const mod = mounted && isMacLike() ? '⌘' : 'Ctrl';
+  const searching = searchTerm.trim().length > 0;
+  const statusText = searching
+    ? visibleMatches === 0
+      ? `No entries match “${searchTerm.trim()}”.`
+      : `${visibleMatches} ${visibleMatches === 1 ? 'entry matches' : 'entries match'} “${searchTerm.trim()}”.`
+    : `${visibleCount} of ${data.nodes.length} entries, ${data.links.length} connections.`;
   const ctx: ExplorerState = {
     data,
     index,
@@ -249,9 +256,9 @@ export function NetworkExplorer({ data, layout: givenLayout }: { data: GraphData
     setGuide,
     guideStartId: FEATURED_PROJECT_ID,
     announce: setAnnouncement,
+    filters: { totals, toggleType, statusText, wide, mounted },
   };
-  const mod = mounted && isMacLike() ? '⌘' : 'Ctrl';
-  const searching = searchTerm.trim().length > 0;
+
 
   return (
     <ExplorerContext.Provider value={ctx}>
@@ -260,61 +267,73 @@ export function NetworkExplorer({ data, layout: givenLayout }: { data: GraphData
       <noscript>
         <style>{'.js-only{display:none!important}'}</style>
       </noscript>
-      <div className="flex h-[calc(100dvh-7.375rem)] min-h-[30rem] flex-col md:h-[calc(100dvh-4.75rem)] md:min-h-[34rem]">
+      <div className="flex h-[calc(100dvh-3.5rem)] min-h-[28rem] flex-col md:h-[calc(100dvh-4rem)] md:min-h-[32rem]">
         <div className="border-b border-rule bg-paper">
-          <div className="flex flex-col gap-3 px-4 py-3 md:px-6 lg:flex-row lg:items-center lg:gap-6">
-            <div className="flex items-center gap-3 lg:contents">
-              <h1 className="sr-only">
-                Projects, methods, people and partners of the Helen Hamlyn Centre for Design
-              </h1>
-              <search className="js-only relative min-w-0 flex-1 lg:max-w-md">
-                <label htmlFor="network-search" className="sr-only">
-                  Search names, descriptions and methods
-                </label>
-                <span className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-ink-muted">
-                  <SearchIcon />
-                </span>
-                <input
-                  ref={searchRef}
-                  id="network-search"
-                  type="search"
-                  autoComplete="off"
-                  spellCheck={false}
-                  value={searchTerm}
-                  onChange={(e) => onSearchChange(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Escape' && searchTerm) {
-                      e.stopPropagation();
-                      onSearchChange('');
-                    }
+          <div className="flex items-center gap-2 px-3 py-2 md:gap-4 md:px-6">
+            <h1 className="sr-only">Projects, methods, people and partners of the Helen Hamlyn Centre for Design</h1>
+            <search className="js-only relative min-w-0 flex-1 md:max-w-md">
+              <label htmlFor="network-search" className="sr-only">
+                Search names, descriptions and methods
+              </label>
+              <span className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-ink-muted">
+                <SearchIcon />
+              </span>
+              <input
+                ref={searchRef}
+                id="network-search"
+                type="search"
+                autoComplete="off"
+                spellCheck={false}
+                value={searchTerm}
+                onChange={(e) => onSearchChange(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Escape' && searchTerm) {
+                    e.stopPropagation();
+                    onSearchChange('');
+                  }
+                }}
+                placeholder={wide ? 'Search the network' : 'Search'}
+                aria-describedby="search-status search-hint"
+                className="h-10 w-full rounded-full border-0 bg-surface pl-11 pr-11 text-base text-ink ring-1 ring-control transition-shadow placeholder:text-ink-muted hover:ring-ink focus:bg-paper focus:outline-none focus-visible:ring-2 focus-visible:ring-accent sm:pr-20 [&::-webkit-search-cancel-button]:hidden"
+              />
+              <span id="search-hint" className="sr-only">
+                Shortcut: {mod} K.
+              </span>
+              {searching ? (
+                <button
+                  type="button"
+                  onClick={() => {
+                    onSearchChange('');
+                    setAnnouncement('Search cleared.');
+                    searchRef.current?.focus();
                   }}
-                  placeholder={wide ? 'Search the network' : 'Search'}
-                  aria-describedby="search-status search-hint"
-                  className="h-11 w-full rounded-full border-0 bg-surface pl-11 pr-11 text-base sm:pr-20 text-ink ring-1 ring-control transition-shadow placeholder:text-ink-muted hover:ring-ink focus:bg-paper focus:outline-none focus-visible:ring-2 focus-visible:ring-accent [&::-webkit-search-cancel-button]:hidden"
-                />
-                <span id="search-hint" className="sr-only">
-                  Shortcut: {mod} K.
-                </span>
-                {searching ? (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      onSearchChange('');
-                      setAnnouncement('Search cleared.');
-                      searchRef.current?.focus();
-                    }}
-                    className="absolute right-1 top-1/2 inline-grid size-9 -translate-y-1/2 place-items-center rounded-full text-ink-muted hover:text-ink"
-                    aria-label="Clear search"
-                  >
-                    <CloseIcon />
-                  </button>
-                ) : (
-                  <kbd aria-hidden="true" className="absolute right-3 top-1/2 hidden -translate-y-1/2 sm:inline">
-                    {mod} K
-                  </kbd>
-                )}
-              </search>
-              <nav aria-label="View" className="lg:order-last">
+                  className="absolute right-1 top-1/2 inline-grid size-9 -translate-y-1/2 place-items-center rounded-full text-ink-muted hover:text-ink"
+                  aria-label="Clear search"
+                >
+                  <CloseIcon />
+                </button>
+              ) : (
+                <kbd aria-hidden="true" className="absolute right-3 top-1/2 hidden -translate-y-1/2 sm:inline">
+                  {mod} K
+                </kbd>
+              )}
+            </search>
+            {/* Read with the search box; shown on screen in the legend or above the table. */}
+            <p id="search-status" className="sr-only">
+              {statusText}
+            </p>
+
+            <div className="ml-auto flex flex-none items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setHelpOpen(true)}
+                className="js-only hidden size-10 items-center justify-center rounded-full text-ink-muted hover:text-ink lg:inline-flex"
+                aria-label="Keyboard shortcuts"
+                title="Keyboard shortcuts (?)"
+              >
+                <kbd aria-hidden="true">?</kbd>
+              </button>
+              <nav aria-label="View">
                 <ul className="flex rounded-full bg-surface p-0.5 ring-1 ring-rule">
                   {(['map', 'table'] as const).map((v) => (
                     <li key={v}>
@@ -327,7 +346,7 @@ export function NetworkExplorer({ data, layout: givenLayout }: { data: GraphData
                           e.preventDefault();
                           switchView(v);
                         }}
-                        className="inline-flex min-h-10 items-center rounded-full px-4 text-[0.9375rem] font-medium text-ink-muted no-underline transition-colors hover:text-ink aria-[current]:bg-paper aria-[current]:text-ink aria-[current]:shadow-[0_1px_2px_rgb(34_33_42/0.12)] aria-[current]:ring-1 aria-[current]:ring-rule-strong"
+                        className="inline-flex min-h-9 items-center rounded-full px-3.5 text-[0.9375rem] font-medium text-ink-muted no-underline transition-colors hover:text-ink aria-[current]:bg-paper aria-[current]:text-ink aria-[current]:shadow-[0_1px_2px_rgb(34_33_42/0.12)] aria-[current]:ring-1 aria-[current]:ring-rule-strong"
                       >
                         {v === 'map' ? 'Map' : 'Table'}
                       </Link>
@@ -336,86 +355,6 @@ export function NetworkExplorer({ data, layout: givenLayout }: { data: GraphData
                 </ul>
               </nav>
             </div>
-
-
-            <fieldset className="js-only min-w-0">
-              <legend className="sr-only">Show entity types</legend>
-              <div className="-mx-4 flex gap-1 overflow-x-auto px-3 [scrollbar-width:none] md:-mx-1 md:flex-wrap md:overflow-visible md:px-0 [&::-webkit-scrollbar]:hidden">
-                {BROWSE_ORDER.map((t) => (
-                  <label
-                    key={t}
-                    className="group relative inline-flex min-h-10 flex-none cursor-pointer select-none items-center gap-2 rounded-full px-3 text-[0.9375rem] text-ink ring-1 ring-transparent transition-colors hover:bg-surface has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-accent"
-                  >
-                    <input
-                      type="checkbox"
-                      checked={visibleTypes[t]}
-                      onChange={() => toggleType(t)}
-                      className="peer absolute inset-0 cursor-pointer appearance-none rounded-full focus:outline-none"
-                    />
-                    <span
-                      aria-hidden="true"
-                      className="grid size-4 place-items-center rounded-[4px] ring-1 ring-control ring-inset peer-checked:ring-0"
-                      style={{ background: visibleTypes[t] ? `var(--color-${TYPE_META[t].token})` : 'transparent' }}
-                    >
-                      {visibleTypes[t] && (
-                        <svg viewBox="0 0 12 12" width="10" height="10" aria-hidden="true">
-                          <path d="M2.5 6.2l2.3 2.3 4.7-5" fill="none" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-                        </svg>
-                      )}
-                    </span>
-                    <span className="peer-[:not(:checked)]:text-ink-muted peer-[:not(:checked)]:line-through decoration-1">
-                      {TYPE_META[t].plural}
-                    </span>
-                    <span className="meta tabular-nums">{totals[t]}</span>
-                  </label>
-                ))}
-              </div>
-            </fieldset>
-
-            <button
-              type="button"
-              onClick={() => setHelpOpen(true)}
-              className="js-only hidden min-h-10 items-center gap-2 rounded-full px-3 text-[0.9375rem] text-ink-muted hover:text-ink lg:inline-flex"
-              aria-label="Keyboard shortcuts"
-              title="Keyboard shortcuts (?)"
-            >
-              <kbd aria-hidden="true">?</kbd>
-            </button>
-          </div>
-
-          <div className="flex min-h-9 flex-wrap items-center justify-between gap-x-4 gap-y-1 border-t border-rule px-4 py-1.5 md:px-6">
-            <p id="search-status" className="meta">
-              {searching
-                ? visibleMatches === 0
-                  ? `No entries match “${searchTerm.trim()}”.`
-                  : `${visibleMatches} ${visibleMatches === 1 ? 'entry matches' : 'entries match'} “${searchTerm.trim()}”.`
-                : `${visibleCount} of ${data.nodes.length} entries, ${data.links.length} connections.`}
-            </p>
-            {view === 'map' && (
-              <p className="meta">
-                {mounted ? (
-                  wide ? (
-                    <>
-                      Arrow keys move between entries. Prefer a list?{' '}
-                      <Link href="/table" className="link" onClick={(e) => { e.preventDefault(); switchView('table'); }}>
-                        Use the table
-                      </Link>
-                      .
-                    </>
-                  ) : (
-                    <span className="sr-only">Pinch or drag to move around the map. The table view is easier on a small screen.</span>
-                  )
-                ) : (
-                  <>
-                    Search and filters need JavaScript. Each entry links to its page, and the{' '}
-                    <Link href="/table" className="link">
-                      table view
-                    </Link>{' '}
-                    lists them all.
-                  </>
-                )}
-              </p>
-            )}
           </div>
         </div>
 
@@ -429,7 +368,6 @@ export function NetworkExplorer({ data, layout: givenLayout }: { data: GraphData
           <DetailsPanel onClose={closeDetails} />
         </div>
       </div>
-
 
       <div role="status" aria-live="polite" aria-atomic="true" className="sr-only">
         {announcement}

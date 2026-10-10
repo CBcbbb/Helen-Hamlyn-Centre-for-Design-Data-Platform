@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { slugify } from './slug';
 import { excerpt, linkify, numberedSteps, paragraphs, urlLabel } from './text';
 import { filterByType, indexGraph, neighboursOf, searchNodes, twoStep } from './graph';
-import { computeLayout, nearestInDirection, shortLabel, NODE_RADIUS } from './layout';
+import { computeLayout, nearestInDirection, shortLabel, starBox, wrapLabel, NODE_RADIUS } from './layout';
 import { graph, getBySlug, getFeaturedProject, hrefFor, index, nodesOfType } from './data';
 import type { GraphData } from './types';
 
@@ -95,10 +95,14 @@ describe('layout', () => {
       for (const n of graph.nodes) {
         const p = layout.positions[arrangement][n.id];
         expect(p, `${arrangement} ${n.id}`).toBeDefined();
-        expect(p.x).toBeGreaterThan(0);
-        expect(p.x + NODE_RADIUS + 8 + shortLabel(n.name).length * 7.2).toBeLessThanOrEqual(layout.width);
-        expect(p.y).toBeGreaterThan(0);
-        expect(p.y).toBeLessThan(layout.height);
+        const box =
+          arrangement === 'constellation'
+            ? starBox(n.name)
+            : { left: -NODE_RADIUS, right: NODE_RADIUS + 8 + shortLabel(n.name).length * 7.7, top: -NODE_RADIUS, bottom: NODE_RADIUS };
+        expect(p.x + box.left).toBeGreaterThanOrEqual(0);
+        expect(p.x + box.right).toBeLessThanOrEqual(layout.width);
+        expect(p.y + box.top).toBeGreaterThanOrEqual(0);
+        expect(p.y + box.bottom).toBeLessThanOrEqual(layout.height);
       }
     }
   });
@@ -133,7 +137,8 @@ describe('layout', () => {
     // Label boxes (mark plus label) don't overlap.
     const boxes = graph.nodes.map((n) => {
       const p = positions[n.id];
-      return { l: p.x - NODE_RADIUS, r: p.x + NODE_RADIUS + 8 + shortLabel(n.name).length * 7.2, t: p.y - 9, b: p.y + 9 };
+      const b = starBox(n.name);
+      return { l: p.x + b.left, r: p.x + b.right, t: p.y + b.top, b: p.y + b.bottom };
     });
     for (let i = 0; i < boxes.length; i++) {
       for (let j = i + 1; j < boxes.length; j++) {
@@ -143,6 +148,13 @@ describe('layout', () => {
         expect(overlap, `${graph.nodes[i].name} / ${graph.nodes[j].name}`).toBe(false);
       }
     }
+  });
+
+  it('wraps constellation labels onto at most three lines', () => {
+    expect(wrapLabel('PACES')).toEqual(['PACES']);
+    const lines = wrapLabel('Enhancing Future Community Connectivity for Ageing Well in Place');
+    expect(lines.length).toBe(3);
+    expect(lines.at(-1)!.endsWith('…')).toBe(true);
   });
 
   it('shortens long labels at a word boundary', () => {

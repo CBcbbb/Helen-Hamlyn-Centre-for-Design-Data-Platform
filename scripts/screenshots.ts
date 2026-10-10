@@ -39,6 +39,7 @@ const SHOTS: Shot[] = [
       await page.waitForTimeout(1300);
     },
   },
+  { name: 'table', path: '/table', fullPage: false },
   { name: 'project', path: '/projects/design-bugs-out', fullPage: true },
 ];
 const WIDTHS = [1440, 390];

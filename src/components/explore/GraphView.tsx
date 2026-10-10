@@ -13,6 +13,9 @@ import {
   lerpPosition,
   nearestInDirection,
   shortLabel,
+  starBox,
+  wrapLabel,
+  STAR_LINE,
   type Arrangement,
   type Position,
 } from '@/lib/layout';
@@ -22,6 +25,7 @@ import { MARK_PATHS, TypeMark } from '../TypeMark';
 import { useExplorer } from './ExplorerContext';
 import { ColumnsIcon, ConstellationIcon, FitIcon, GuideIcon, MinusIcon, PlusIcon } from './icons';
 import { GuideCard } from './GuideCard';
+import { TypeFilters } from './TypeFilters';
 
 const R = NODE_RADIUS;
 /** Switching arrangement: each type sets off a little after the previous one. */
@@ -43,7 +47,9 @@ const ARRANGEMENT_LABEL: Record<Arrangement, string> = {
 };
 
 const clamp01 = (v: number) => Math.max(0, Math.min(1, v));
-const labelWidth = (name: string) => shortLabel(name).length * 7.2 + 4;
+const labelWidth = (name: string) => shortLabel(name).length * 7.7 + 4;
+/** How much of the constellation label is showing at a given progress towards columns (they crossfade mid-move). */
+const starOpacity = (p: number) => 1 - clamp01((p - 0.3) / 0.4);
 
 /**
  * The network map. Rendered by React as SVG, so it is part of the server
@@ -184,8 +190,16 @@ export function GraphView() {
 
   const fitTransform = useCallback(
     (w: number, h: number) => {
-      const k = Math.min(w / layout.width, h / layout.height) * 0.96;
-      return zoomIdentity.translate((w - layout.width * k) / 2, Math.max(0, (h - layout.height * k) / 2)).scale(k);
+      // On wide screens, leave room for the legend panel at the top left.
+      // On wide screens, leave room for the legend panel at the top left, and
+      // keep the top and bottom clear of the floating controls.
+      const reserve = w >= 768 ? Math.min(280, w * 0.22) : 0;
+      const top = w >= 768 ? 44 : 52;
+      const bottom = 56;
+      const k = Math.min((w - reserve) / layout.width, (h - top - bottom) / layout.height) * 0.98;
+      return zoomIdentity
+        .translate(reserve + (w - reserve - layout.width * k) / 2, top + Math.max(0, (h - top - bottom - layout.height * k) / 2))
+        .scale(k);
     },
     [layout],
   );
@@ -259,18 +273,21 @@ export function GraphView() {
       const [sx, sy] = t.apply([p.x, p.y]);
       const sheetOpen = !wide && !!selected;
       const bottomLimit = sheetOpen ? size.h * 0.4 - 48 : size.h - 40;
-      const right = sx + (R + 8 + labelWidth(n.name)) * t.k;
-      if (sx < 24 || right > size.w - 16 || sy < 24 || sy > bottomLimit) {
+      const box = where === layout.positions.columns ? null : starBox(n.name);
+      const right = sx + (box ? box.right : R + 8 + labelWidth(n.name)) * t.k;
+      const lowest = sy + (box ? box.bottom : R) * t.k;
+      const leftmost = sx + (box ? box.left : -R) * t.k;
+      if (leftmost < 16 || right > size.w - 16 || sy < 24 || lowest > bottomLimit) {
         const anchor: [number, number] = sheetOpen
           ? [Math.min(size.w * 0.3, size.w - 200), size.h * 0.2]
-          : [Math.min(size.w / 2, size.w - (R + 8 + labelWidth(n.name)) * t.k - 24), size.h / 2];
+          : [Math.min(size.w / 2, size.w - (box ? box.right : R + 8 + labelWidth(n.name)) * t.k - 24), size.h / 2];
         select(svg)
           .transition()
           .duration(duration)
           .call(zoomRef.current.translateTo, p.x, p.y, anchor);
       }
     },
-    [targetPos, index, size, wide, selected, duration],
+    [targetPos, index, size, wide, selected, duration, layout],
   );
   /* ------------------------------------------------------------------ */
   /* Keyboard: roving tabindex                                          */
@@ -396,11 +413,18 @@ export function GraphView() {
           const flip = layout.positions.columns[l.source].x > layout.positions.columns[l.target].x;
           const [s, e] = flip ? [b, a] : [a, b];
           const w = ((progress.get(l.source) ?? 0) + (progress.get(l.target) ?? 0)) / 2;
+          // Constellation: a gentle arc, like the threads of a mycelium.
+          // Columns: an S-curve. Both are written as cubic curves so one
+          // blends into the other during the move.
+          const qx = (s.x + e.x) / 2 - (e.y - s.y) * 0.16;
+          const qy = (s.y + e.y) / 2 + (e.x - s.x) * 0.16;
+          const arc1 = { x: s.x + ((qx - s.x) * 2) / 3, y: s.y + ((qy - s.y) * 2) / 3 };
+          const arc2 = { x: e.x + ((qx - e.x) * 2) / 3, y: e.y + ((qy - e.y) * 2) / 3 };
           const mid = (s.x + e.x) / 2;
-          const c1x = s.x + (e.x - s.x) / 3 + (mid - (s.x + (e.x - s.x) / 3)) * w;
-          const c1y = s.y + (e.y - s.y) / 3 + (s.y - (s.y + (e.y - s.y) / 3)) * w;
-          const c2x = s.x + ((e.x - s.x) * 2) / 3 + (mid - (s.x + ((e.x - s.x) * 2) / 3)) * w;
-          const c2y = s.y + ((e.y - s.y) * 2) / 3 + (e.y - (s.y + ((e.y - s.y) * 2) / 3)) * w;
+          const c1x = arc1.x + (mid - arc1.x) * w;
+          const c1y = arc1.y + (s.y - arc1.y) * w;
+          const c2x = arc2.x + (mid - arc2.x) * w;
+          const c2y = arc2.y + (e.y - arc2.y) * w;
           const active = !!emphasisId && (l.source === emphasisId || l.target === emphasisId);
           const onPath = pathEdges.has(`${l.source}|${l.target}`);
           // With an entry emphasised, only its own edges stay; with a
@@ -435,26 +459,56 @@ export function GraphView() {
           const emphasised =
             isSelected || isMatch || isGuide || pathIds.has(n.id) || (!!emphasis && emphasis.has(n.id));
           const showLabel = !fewLabels || emphasised;
-          const fontSize = fewLabels && emphasised ? 14 * labelScale : undefined;
+          const scale = fewLabels && emphasised ? labelScale : 1;
+          const pr = progress.get(n.id) ?? 0;
+          const starOp = starOpacity(pr);
+          const lines = wrapLabel(n.name);
+          const box = starBox(n.name);
           const content = (
             <>
               {isGuide && <circle cx={0} cy={0} r={R + 9} className="guide-pulse" />}
               <circle cx={0} cy={0} r={R + 5} className="focus-ring" />
-              {/* generous hit area */}
-              <rect x={-R - 8} y={-16} width={R * 2 + 16 + labelWidth(n.name)} height={32} fill="transparent" />
+              {/* generous hit area: the mark and its label, in whichever arrangement is showing */}
+              {starOp > 0.5 ? (
+                <rect
+                  x={box.left * scale - 4}
+                  y={box.top * scale - 4}
+                  width={(box.right - box.left) * scale + 8}
+                  height={(box.bottom - box.top) * scale + 8}
+                  fill="transparent"
+                />
+              ) : (
+                <rect x={-R - 8} y={-16} width={R * 2 + 16 + labelWidth(n.name) * scale} height={32} fill="transparent" />
+              )}
               <path
                 d={MARK_PATHS[n.type]}
                 transform={`translate(${-R} ${-R}) scale(${(R * 2) / 10})`}
                 fill={`var(--color-${meta.token})`}
               />
-              <text
-                x={R + 8 * (fontSize ? labelScale : 1)}
-                y={4.5 * (fontSize ? labelScale : 1)}
-                data-hidden={!showLabel || undefined}
-                style={fontSize ? { fontSize } : undefined}
-              >
-                {shortLabel(n.name)}
-              </text>
+              {showLabel && starOp > 0 && (
+                <text
+                  className="star-label"
+                  transform={scale !== 1 ? `scale(${scale})` : undefined}
+                  style={{ opacity: starOp, fill: `var(--color-${meta.token}-text)` }}
+                >
+                  {lines.map((line, i) => (
+                    <tspan key={i} x={0} y={R + 6 + STAR_LINE * (i + 0.78)}>
+                      {line}
+                    </tspan>
+                  ))}
+                </text>
+              )}
+              {showLabel && starOp < 1 && (
+                <text
+                  className="column-label"
+                  x={R + 8}
+                  y={4.5}
+                  transform={scale !== 1 ? `scale(${scale})` : undefined}
+                  style={{ opacity: 1 - starOp }}
+                >
+                  {shortLabel(n.name)}
+                </text>
+              )}
             </>
           );
           const common = {
@@ -504,17 +558,22 @@ export function GraphView() {
   // Where the guide's first card sits: just below its project, inside the map.
   let guideCardStyle: React.CSSProperties | undefined;
   if (mounted && guide === 'select' && startNode && size && wide) {
-    const [sx, sy] = transform.apply([pos[guideStartId].x, pos[guideStartId].y]);
+    const [sx, sy0] = transform.apply([pos[guideStartId].x, pos[guideStartId].y]);
+    // Below the entry's label (constellation labels sit under the mark).
+    const sy = sy0 + (starOpacity(progress.get(guideStartId) ?? 0) > 0.5 ? starBox(startNode.name).bottom * transform.k - R : 0);
     const cardW = 372;
     const left = Math.max(12, Math.min(size.w - cardW - 12, sx - 28));
+    // (The caret points up at the entry from 28px in.)
     const below = sy + 26 + 190 < size.h;
     guideCardStyle = below
-      ? { left, top: sy + 26, width: cardW }
-      : { left, top: sy - 26, width: cardW, transform: 'translateY(-100%)' };
+      ? { left, top: sy + 16, width: cardW }
+      : { left, top: sy0 - 26, width: cardW, transform: 'translateY(-100%)' };
   }
 
   return (
     <div className="relative h-full w-full overflow-hidden bg-paper">
+      <TypeFilters variant="panel" />
+
       {mounted && (
         <fieldset className="absolute right-3 top-3 z-10 md:right-4 md:top-4">
           <legend className="sr-only">Arrange the map</legend>
@@ -536,7 +595,7 @@ export function GraphView() {
                   className="absolute inset-0 cursor-pointer appearance-none rounded-full focus:outline-none"
                 />
                 {a === 'constellation' ? <ConstellationIcon /> : <ColumnsIcon />}
-                <span className="max-[359px]:sr-only">{ARRANGEMENT_LABEL[a]}</span>
+                <span className="max-sm:sr-only">{ARRANGEMENT_LABEL[a]}</span>
               </label>
             ))}
           </div>
