@@ -28,7 +28,8 @@ const MAX_WIDTH = 44; // rem
  * Narrow screens: a sheet over the lower part of the map, with the selected
  * entry panned into the space above it. It can be expanded to fill the map.
  *
- * Either way it is a labelled complementary region. Focus moves to its
+ * Either way it is a complementary region labelled "Details" (not the entry
+ * heading, which VoiceOver would otherwise read twice). Focus moves to its
  * heading when an entry opens, Escape closes it, and focus then returns to
  * what opened it.
  */
@@ -97,7 +98,7 @@ function WidePanel({ node, onClose }: { node: GraphNode; onClose: () => void }) 
   return (
     <aside
       ref={ref}
-      aria-labelledby="details-title"
+      aria-label="Details"
       className="anim-panel relative flex min-h-0 flex-none flex-col border-l border-rule bg-paper"
       style={{ width: `${width}rem`, maxWidth: '55vw' }}
     >
@@ -133,7 +134,7 @@ function Sheet({ node, onClose }: { node: GraphNode; onClose: () => void }) {
   return (
     <aside
       ref={ref}
-      aria-labelledby="details-title"
+      aria-label="Details"
       className={`anim-sheet absolute inset-x-0 bottom-0 z-30 flex flex-col rounded-t-2xl border-t border-rule bg-paper shadow-[0_-12px_40px_-16px_rgb(34_33_42/0.4)] transition-[height] duration-200 ${expanded ? 'h-full rounded-t-none' : 'h-[60%]'}`}
     >
       <div className="flex flex-none items-center gap-1 border-b border-rule px-2 py-1.5">

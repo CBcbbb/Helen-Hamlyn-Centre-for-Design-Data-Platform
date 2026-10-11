@@ -156,7 +156,7 @@ test('narrow screen: details open as a sheet over the map, which stays usable', 
   await page.goto('/');
   await page.waitForLoadState('networkidle');
   await page.getByRole('button', { name: 'Open Design Bugs Out' }).click();
-  const sheet = page.getByRole('complementary', { name: 'Design Bugs Out' });
+  const sheet = page.getByRole('complementary', { name: 'Details' });
   await expect(sheet).toBeVisible();
   await expect(page.getByRole('dialog')).toHaveCount(0);
   // The selected entry is panned into the map above the sheet.
