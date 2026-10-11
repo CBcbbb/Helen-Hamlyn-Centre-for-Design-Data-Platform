@@ -1,6 +1,6 @@
 'use client';
 
-import { useId, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import { BROWSE_ORDER, TYPE_META } from '@/lib/types-meta';
 import { TypeMark } from '../TypeMark';
 import { useExplorer } from './ExplorerContext';
@@ -17,6 +17,45 @@ export function TypeFilters({ variant }: { variant: 'menu' | 'row' }) {
   const { totals, toggleType, statusText } = filters;
   const [open, setOpen] = useState(false);
   const id = useId();
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+
+  // An open menu closes on Escape and on a tap or click outside it; focus
+  // goes back to the Filters button rather than being lost with the menu.
+  useEffect(() => {
+    if (!open) return;
+    const close = () => {
+      setOpen(false);
+      buttonRef.current?.focus({ preventScroll: true });
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return;
+      e.preventDefault();
+      e.stopPropagation();
+      close();
+    };
+    const onPointer = (e: PointerEvent) => {
+      if (!wrapRef.current || wrapRef.current.contains(e.target as Node)) return;
+      setOpen(false);
+      // Once the tap has finished: if it moved focus somewhere real (an entry
+      // on the map, the details it opened, a link), leave it there; if focus
+      // fell to the page itself (the body, or a container such as <main>),
+      // bring it back to the Filters button.
+      const after = () =>
+        requestAnimationFrame(() => {
+          const active = document.activeElement;
+          const lost = !active || active === document.body || (!!wrapRef.current && active.contains(wrapRef.current));
+          if (lost) buttonRef.current?.focus({ preventScroll: true });
+        });
+      document.addEventListener('pointerup', after, { once: true, capture: true });
+    };
+    document.addEventListener('keydown', onKey, true);
+    document.addEventListener('pointerdown', onPointer);
+    return () => {
+      document.removeEventListener('keydown', onKey, true);
+      document.removeEventListener('pointerdown', onPointer);
+    };
+  }, [open]);
 
   const list = (
     <fieldset className="min-w-0">
@@ -57,8 +96,9 @@ export function TypeFilters({ variant }: { variant: 'menu' | 'row' }) {
   if (variant === 'row') return <div className="js-only flex-none">{list}</div>;
 
   return (
-    <div className="js-only relative flex-none">
+    <div ref={wrapRef} className="js-only relative flex-none">
       <button
+        ref={buttonRef}
         type="button"
         aria-expanded={open}
         aria-controls={id}
