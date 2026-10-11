@@ -186,11 +186,11 @@ describe('NetworkExplorer', () => {
     const entry = container.querySelector<SVGGElement>('[data-id="PR004"]')!;
     entry.focus();
     await user.keyboard('{Enter}');
-    const panel = screen.getByRole('complementary', { name: 'Design Bugs Out' });
+    const panel = screen.getByRole('complementary', { name: 'Details' });
     expect(panel).not.toHaveAttribute('aria-modal');
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
     await user.keyboard('{Escape}');
-    expect(screen.queryByRole('complementary', { name: 'Design Bugs Out' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('complementary', { name: 'Details' })).not.toBeInTheDocument();
     await act(() => new Promise((r) => setTimeout(r, 20)));
     expect(entry).toHaveFocus();
   });
@@ -201,7 +201,7 @@ describe('NetworkExplorer', () => {
     nav.pathname = '/table';
     render(<NetworkExplorer data={graph} />);
     await user.click(screen.getByRole('button', { name: 'PACES' }));
-    const sheet = screen.getByRole('complementary', { name: 'PACES' });
+    const sheet = screen.getByRole('complementary', { name: 'Details' });
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
     expect(within(sheet).getByRole('heading', { level: 2, name: 'PACES' })).toHaveFocus();
     const expand = within(sheet).getByRole('button', { name: 'Expand' });
@@ -284,12 +284,13 @@ describe('NetworkExplorer', () => {
     window.localStorage.setItem('hhcd-guide', 'done');
     const { container } = render(<NetworkExplorer data={graph} />);
     await user.click(container.querySelector<SVGGElement>('[data-id="PR004"]')!);
-    const panel = screen.getByRole('complementary', { name: 'Design Bugs Out' });
+    const panel = screen.getByRole('complementary', { name: 'Details' });
     await user.click(within(panel).getByRole('button', { name: 'Hua Dong' }));
     const trail = screen.getByRole('navigation', { name: 'Your path' });
     expect(within(trail).getByText('Hua Dong').closest('[aria-current]')).toHaveAttribute('aria-current', 'step');
     await user.click(within(trail).getByRole('button', { name: /Design Bugs Out, step 1, go back/ }));
-    expect(screen.getByRole('complementary', { name: 'Design Bugs Out' })).toBeInTheDocument();
+    const back = screen.getByRole('complementary', { name: 'Details' });
+    expect(within(back).getByRole('heading', { level: 2 })).toHaveTextContent('Design Bugs Out');
     expect(screen.queryByRole('navigation', { name: 'Your path' })).not.toBeInTheDocument();
   });
 
@@ -303,7 +304,7 @@ describe('NetworkExplorer', () => {
       expect(document.querySelector('.graph-node[tabindex="0"]')).toHaveAttribute('data-id', 'PR004');
 
       await user.click(within(first).getByRole('button', { name: 'Open Design Bugs Out' }));
-      const panel = screen.getByRole('complementary', { name: 'Design Bugs Out' });
+      const panel = screen.getByRole('complementary', { name: 'Details' });
       const second = within(panel).getByRole('region', { name: 'Follow a connection' });
       expect(second).toHaveTextContent('2 of 4');
 
@@ -336,7 +337,8 @@ describe('NetworkExplorer', () => {
     it('is not shown when arriving to see a particular entry', async () => {
       window.history.replaceState(null, '', '/?focus=PR013');
       render(<NetworkExplorer data={graph} />);
-      expect(await screen.findByRole('complementary', { name: 'Heart n Soul @ The Hub' })).toBeInTheDocument();
+      const focused = await screen.findByRole('complementary', { name: 'Details' });
+      expect(within(focused).getByRole('heading', { level: 2 })).toHaveTextContent('Heart n Soul @ The Hub');
       expect(screen.queryByText('1 of 4')).not.toBeInTheDocument();
     });
   });
