@@ -293,6 +293,54 @@ describe('NetworkExplorer', () => {
     expect(screen.queryByRole('navigation', { name: 'Your path' })).not.toBeInTheDocument();
   });
 
+  it('path: closing the details clears the path, so nothing stays highlighted on the map', async () => {
+    const user = userEvent.setup();
+    window.localStorage.setItem('hhcd-guide', 'done');
+    const { container } = render(<NetworkExplorer data={graph} />);
+    await user.click(container.querySelector<SVGGElement>('[data-id="PR004"]')!);
+    const panel = screen.getByRole('complementary', { name: 'Design Bugs Out' });
+    await user.click(within(panel).getByRole('button', { name: 'Hua Dong' }));
+    expect(container.querySelector('.graph-node[data-path="true"]')).not.toBeNull();
+    await user.keyboard('{Escape}');
+    expect(screen.queryByRole('complementary')).not.toBeInTheDocument();
+    expect(container.querySelector('.graph-node[data-path="true"]')).toBeNull();
+    expect(container.querySelector('.graph-edge[data-path="true"]')).toBeNull();
+  });
+
+  it('path: starting a search clears the path, so only matches are highlighted', async () => {
+    const user = userEvent.setup();
+    window.localStorage.setItem('hhcd-guide', 'done');
+    const { container } = render(<NetworkExplorer data={graph} />);
+    await user.click(container.querySelector<SVGGElement>('[data-id="PR004"]')!);
+    await user.click(within(screen.getByRole('complementary', { name: 'Design Bugs Out' })).getByRole('button', { name: 'Hua Dong' }));
+    expect(screen.getByRole('navigation', { name: 'Your path' })).toBeInTheDocument();
+    await user.type(screen.getByRole('searchbox'), 'zzqx');
+    expect(screen.queryByRole('navigation', { name: 'Your path' })).not.toBeInTheDocument();
+    expect(container.querySelector('.graph-node[data-path="true"]')).toBeNull();
+  });
+
+  it('narrow screens: the Filters menu closes on Escape and on an outside tap, returning focus to its button', async () => {
+    setWide(false);
+    const user = userEvent.setup();
+    window.localStorage.setItem('hhcd-guide', 'done');
+    render(<NetworkExplorer data={graph} />);
+    const button = screen.getByRole('button', { name: /Filters/ });
+    await user.click(button);
+    expect(button).toHaveAttribute('aria-expanded', 'true');
+    await user.click(screen.getByRole('checkbox', { name: /People/ }));
+    await user.keyboard('{Escape}');
+    expect(button).toHaveAttribute('aria-expanded', 'false');
+    expect(button).toHaveFocus();
+
+    await user.click(button);
+    expect(button).toHaveAttribute('aria-expanded', 'true');
+    await user.click(screen.getByRole('checkbox', { name: /Methods/ }));
+    await user.click(document.body);
+    expect(button).toHaveAttribute('aria-expanded', 'false');
+    await act(() => new Promise((r) => setTimeout(r, 30)));
+    expect(button).toHaveFocus();
+  });
+
   describe('guide', () => {
     it('on a first visit, points at one project and moves on as you follow it', async () => {
       const user = userEvent.setup();

@@ -32,8 +32,15 @@ const R = NODE_RADIUS;
 /** Switching arrangement: each type sets off a little after the previous one. */
 const MOVE_MS = 760;
 const TYPE_DELAY = 110;
-/** Below this zoom, only emphasised entries keep their label. */
+/** Below this zoom, only emphasised entries and the best-connected entries keep their label. */
 const FEW_LABELS_BELOW = 0.55;
+/** How many of the best-connected entries keep their label when zoomed out (wide / narrow screens). */
+const HUB_LABELS_WIDE = 8;
+const HUB_LABELS_NARROW = 4;
+/** On-screen radius of an entry's marker when its label is hidden. */
+const MARKER_PX = 5;
+/** Minimum on-screen size of the column headings in the By type arrangement. */
+const HEADING_MIN_PX = 13;
 
 const ARROWS: Record<string, 'up' | 'down' | 'left' | 'right'> = {
   ArrowUp: 'up',
@@ -424,6 +431,38 @@ export function GraphView() {
   const k = mounted ? transform.k : 1;
   const fewLabels = mounted && k < FEW_LABELS_BELOW;
   const labelScale = fewLabels ? 0.85 / k : 1;
+  /**
+   * Zoomed out, the best-connected visible entries keep their label so the
+   * map still reads as a map; every other entry is drawn as its type's mark.
+   */
+  const hubIds = useMemo(() => {
+    if (!fewLabels) return new Set<string>();
+    const count = wide ? HUB_LABELS_WIDE : HUB_LABELS_NARROW;
+    const ranked = [...visibleNodes].sort((a, b) => {
+      const d = (index.neighbours.get(b.id)?.size ?? 0) - (index.neighbours.get(a.id)?.size ?? 0);
+      return d || a.name.localeCompare(b.name);
+    });
+    // Best-connected first; skip any label that would overlap one already
+    // kept, so the zoomed-out map never shows a pile of names.
+    const pad = 6 / k;
+    const kept: { id: string; l: number; r: number; t: number; b: number }[] = [];
+    const where = layout.positions[settled];
+    for (const n of ranked) {
+      if (kept.length >= count) break;
+      const p = where[n.id];
+      const box = starBox(n.name);
+      const rect = {
+        id: n.id,
+        l: p.x + box.left * labelScale - pad,
+        r: p.x + box.right * labelScale + pad,
+        t: p.y + box.top * labelScale - pad,
+        b: p.y + box.bottom * labelScale + pad,
+      };
+      if (kept.some((o) => rect.l < o.r && rect.r > o.l && rect.t < o.b && rect.b > o.t)) continue;
+      kept.push(rect);
+    }
+    return new Set(kept.map((r) => r.id));
+  }, [fewLabels, visibleNodes, index, wide, k, labelScale, layout, settled]);
   const counts = Object.fromEntries(COLUMN_ORDER.map((t) => [t, visibleNodes.filter((n) => n.type === t).length]));
   const startNode = index.byId.get(guideStartId);
 
@@ -439,7 +478,14 @@ export function GraphView() {
           layout.columns
             .filter((c) => visibleTypes[c.type])
             .map((c) => (
-              <text key={c.type} x={c.x - 6} y={layout.columnsTop} className="fill-ink-muted" style={{ font: '600 14px var(--font-display)' }}>
+              <text
+                key={c.type}
+                x={c.x - 6}
+                y={layout.columnsTop}
+                className="fill-ink-muted"
+                // At least HEADING_MIN_PX on screen, whatever the zoom.
+                style={{ font: `600 ${Math.max(14, HEADING_MIN_PX / k)}px var(--font-display)` }}
+              >
                 {TYPE_META[c.type].plural} ({counts[c.type]})
               </text>
             ))}
@@ -500,8 +546,10 @@ export function GraphView() {
           const isGuide = mounted && guide === 'select' && n.id === guideStartId;
           const emphasised =
             isSelected || isMatch || isGuide || pathIds.has(n.id) || (!!emphasis && emphasis.has(n.id));
-          const showLabel = !fewLabels || emphasised;
-          const scale = fewLabels && emphasised ? labelScale : 1;
+          const showLabel = !fewLabels || emphasised || hubIds.has(n.id);
+          const scale = fewLabels && showLabel ? labelScale : 1;
+          // Without its label, a constellation entry is drawn as its type's mark at a fixed on-screen size.
+          const markerOnly = !showLabel;
           const pr = progress.get(n.id) ?? 0;
           const starOp = starOpacity(pr);
           const lines = wrapLabel(n.name);
@@ -542,6 +590,11 @@ export function GraphView() {
               <path
                 d={MARK_PATHS[n.type]}
                 transform={(() => {
+                  if (markerOnly) {
+                    // Centred on the entry, MARKER_PX on screen at any zoom, and never smaller than the columns' mark.
+                    const r = Math.max(R, MARKER_PX / k);
+                    return `translate(${-r} ${-r}) scale(${(r * 2) / 10})`;
+                  }
                   const t = 1 - starOp;
                   const mx = (-(lines[0].length * STAR_CHAR + 22) / 2 + 7) * scale * (1 - t);
                   const my = ((-(lines.length * STAR_LINE) / 2 + STAR_LINE * 0.5) * scale) * (1 - t);
@@ -549,7 +602,8 @@ export function GraphView() {
                   return `translate(${mx - r} ${my - r}) scale(${(r * 2) / 10})`;
                 })()}
                 fill={`var(--color-${meta.token})`}
-                style={{ opacity: 1 - starOp }}
+                style={{ opacity: markerOnly ? 1 : 1 - starOp }}
+                data-marker={markerOnly || undefined}
               />
               {showLabel && starOp > 0 && (
                 <text

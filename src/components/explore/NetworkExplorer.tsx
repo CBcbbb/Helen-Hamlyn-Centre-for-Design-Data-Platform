@@ -113,7 +113,10 @@ export function NetworkExplorer({ data, layout: givenLayout }: { data: GraphData
       const previous = selectedRef.current;
       selectedRef.current = node;
       setSelected(node);
-      if (!node) return;
+      if (!node) {
+        setPath([]);
+        return;
+      }
       setPath((prev) => {
         const at = prev.findIndex((n) => n.id === node.id);
         if (at >= 0) return prev.slice(0, at + 1);
@@ -134,6 +137,9 @@ export function NetworkExplorer({ data, layout: givenLayout }: { data: GraphData
   const closeDetails = useCallback(() => {
     selectedRef.current = null;
     setSelected(null);
+    // The path belongs to the open details: once they close, nothing on the
+    // map should stay highlighted and be mistaken for a search result.
+    setPath([]);
     // Closing the details mid-guide skips to its last card, on the map.
     if (guideRef.current === 'follow' || guideRef.current === 'path') setGuide('arrange');
     const el = returnFocusRef.current;
@@ -198,6 +204,8 @@ export function NetworkExplorer({ data, layout: givenLayout }: { data: GraphData
   useEffect(() => () => clearTimeout(announceTimer.current), []);
 
   const onSearchChange = (term: string) => {
+    // Starting a search clears the path, so only matches are highlighted.
+    if (term.trim() && !searchTerm.trim()) setPath(selectedRef.current ? [selectedRef.current] : []);
     setSearchTerm(term);
     clearTimeout(announceTimer.current);
     const q = term.trim();
